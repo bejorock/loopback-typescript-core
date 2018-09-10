@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins"
+    ]
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": false
+  }
+}

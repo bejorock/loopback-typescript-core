@@ -1,0 +1,39 @@
+{
+  "name": "loopback-typescript-core",
+  "version": "1.0.0",
+  "description": "loopback typescript functionality",
+  "main": "src/main/index.ts",
+  "scripts": {
+    "test:init": "./node_modules/.bin/jasmine init",
+    "test": "ts-node ./node_modules/.bin/jasmine"
+  },
+  "keywords": [
+    "loopback",
+    "promise",
+    "model"
+  ],
+  "author": "rana.lubis",
+  "license": "ISC",
+  "dependencies": {
+    "compression": "^1.7.3",
+    "cors": "^2.8.4",
+    "helmet": "^3.13.0",
+    "inversify": "^4.13.0",
+    "lodash": "^4.17.10",
+    "loopback": "^3.21.0",
+    "loopback-boot": "^2.27.1",
+    "loopback-component-explorer": "^6.2.0",
+    "loopback-component-storage": "^3.5.0",
+    "loopback-connector": "^4.5.1",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.3.2"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^2.8.8",
+    "express": "^4.16.3",
+    "jasmine": "^3.2.0",
+    "loopback-connector-kv-redis": "^3.0.0",
+    "loopback-connector-redis": "^3.0.0",
+    "loopback-typescript-redis-connector": "git+https://github.com/bejorock/loopback-typescript-redis-connector.git#v1.0.1"
+  }
+}
