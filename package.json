@@ -1,8 +1,8 @@
 {
   "name": "loopback-typescript-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "loopback typescript functionality",
-  "main": "src/main/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "test:init": "./node_modules/.bin/jasmine init",
     "test": "ts-node ./node_modules/.bin/jasmine"
@@ -15,6 +15,7 @@
   "author": "rana.lubis",
   "license": "ISC",
   "dependencies": {
+    "@types/lodash": "^4.14.116",
     "compression": "^1.7.3",
     "cors": "^2.8.4",
     "helmet": "^3.13.0",

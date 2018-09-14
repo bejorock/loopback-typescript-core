@@ -3,7 +3,7 @@
     "target": "es6",
     "lib": ["es6", "dom"], // inversify js
     "types": ["node", "lodash", "express", "reflect-metadata", "jasmine"], // inversify js
-    "allowJs": true,
+    //"allowJs": true,
     "module": "commonjs",
     "outDir": "dist",
     "sourceMap": true,
@@ -11,6 +11,9 @@
     "experimentalDecorators": true, // inversify js
     "emitDecoratorMetadata": true, // inversify js
     "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    //"noImplicitReturns": true,
+    //"noEmitOnError": true,
     "typeRoots": [
       "./node_modules/@types"
     ]
