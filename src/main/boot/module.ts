@@ -3,24 +3,27 @@ import loopback from 'loopback'
 import compile from 'loopback-boot/lib/compiler'
 import execute from 'loopback-boot/lib/executor'
 import { ReactiveApp } from '../reactive.app'
-import { Container } from "inversify"
+import { Container, injectable, inject } from 'inversify';
 import { Registry } from './registry'
 import * as _ from 'lodash'
 import { BaseDao } from '../models/base.model';
 
+@injectable()
 export default class Module
 {
+	@inject(ReactiveApp)
 	protected ctx:ReactiveApp
 	
 	private container:Container
 
-	constructor(private _ctx) {
+	configure(parentContainer?:Container) {
 		// start up models
-		this.ctx = new ReactiveApp(_ctx)
+		// this.ctx = new ReactiveApp(_ctx)
 
 		// setup container
 		this.container = new Container({ autoBindInjectable: true })
-		this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
+		this.container.parent = parentContainer
+		//this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
 		
 		// register child containers
 		this.loadAll(this)
@@ -194,8 +197,9 @@ export default class Module
 
 		// setup child modules
 		meta.imports.forEach(i => {
-			let tmp = new i(this._ctx)
-			tmp.getContainer().parent = this.container
+			let tmp:Module = this.container.resolve(i); //new i(this._ctx)
+			tmp.configure(this.container)
+			//tmp.getContainer().parent = this.container
 			this.loadAll(tmp)
 		});
 	}
@@ -245,6 +249,14 @@ export default class Module
 			execute(app, instructions, () => resolve());
 		})
 
-		return new rootModule(app)
+		// create root container
+		let rootContainer = new Container({ autoBindInjectable: true })
+		rootContainer.bind<ReactiveApp>(ReactiveApp).toConstantValue(new ReactiveApp(app))
+
+		let module:Module = rootContainer.resolve(rootModule)
+		module.configure(rootContainer)
+		//module.getContainer().parent = rootContainer
+
+		return module
 	}
 }

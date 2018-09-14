@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["es6", "dom"], // inversify js
-    "types": ["node", "lodash", "express", "reflect-metadata"], // inversify js
+    "types": ["node", "lodash", "express", "reflect-metadata", "jasmine"], // inversify js
     "allowJs": true,
     "module": "commonjs",
     "outDir": "dist",
@@ -17,7 +17,8 @@
   },
   "include": [
     "src/main/**/*.ts",
-    "src/sample/**/*.ts"
+    "src/sample/**/*.ts",
+    "spec/**/*.ts"
   ],
   "exclude": [
     "node_modules"
