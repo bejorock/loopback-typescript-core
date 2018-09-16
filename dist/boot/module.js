@@ -79,8 +79,8 @@ let Module = class Module {
         this.loadAfterRemoteHook(DaoClass, modelSeed);
         this.loadAfterRemoteHook(modelClass, modelSeed);
         // load operation hooks
-        this.loadObserver(DaoClass, modelSeed);
-        this.loadObserver(modelClass, modelSeed);
+        this.loadObserver(DaoClass, daoSeed);
+        this.loadObserver(modelClass, daoSeed);
         // register model
         //this.ctx.registerModel(modelSeed, {public: methods.isPublish(), dataSource: methods.getDataSourceName()})
         this.ctx.registerModel(dao.compile(modelSeed), { public: methods.isPublish(), dataSource: methods.getDataSourceName() });
