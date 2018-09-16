@@ -9,29 +9,39 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = __importStar(require("lodash"));
 const registry_1 = require("../boot/registry");
-function CommonModel({ name = undefined, base = "PersistedModel", idInjection = true, options = {
-    validateUpsert: true
-}, mixins = [], acls = [], settings = {}, dao, dataSource, publish = true }) {
+function CommonModel(options) {
     return function (constructor) {
         let definition = registry_1.Registry.getProperty(constructor.name, 'definition');
         let methods = registry_1.Registry.getProperty(constructor.name, 'methods');
-        Object.assign(definition, { base, idInjection, options, mixins: {}, acls }, settings);
-        definition.name = name || constructor.name;
+        let defaultOptions = Object.assign({
+            base: 'PersistedModel',
+            idInjection: true,
+            options: {
+                validateUpsert: true
+            },
+            mixins: [],
+            acls: [],
+            settings: {},
+            publish: true
+        }, options);
+        Object.assign(definition, { base: defaultOptions.base, idInjection: defaultOptions.idInjection, options: defaultOptions.options, mixins: {}, acls: defaultOptions.acls }, defaultOptions.settings);
+        definition.name = defaultOptions.name || constructor.name;
         methods.getModelDefinition = () => definition;
-        methods.getDaoClass = () => dao;
-        methods.getDataSourceName = () => dataSource;
-        methods.getMixins = () => mixins;
-        methods.isPublish = () => publish;
+        methods.getDaoClass = () => defaultOptions.dao;
+        methods.getDataSourceName = () => defaultOptions.dataSource;
+        methods.getMixins = () => defaultOptions.mixins;
+        methods.isPublish = () => defaultOptions.publish;
     };
 }
 exports.CommonModel = CommonModel;
-function CommonModule({ imports = [], models = [], middleware = [], declare = [] }) {
+function CommonModule(options) {
     return function (constructor) {
         let meta = registry_1.Registry.getProperty(constructor.name, 'meta');
-        meta.imports = imports;
-        meta.models = models;
-        meta.middleware = middleware;
-        meta.declare = declare;
+        let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [] }, options);
+        meta.imports = defaultOptions.imports;
+        meta.models = defaultOptions.models;
+        meta.middleware = defaultOptions.middleware;
+        meta.declare = defaultOptions.declare;
     };
 }
 exports.CommonModule = CommonModule;
@@ -56,14 +66,22 @@ function Relation(type, model, foreignKey = "", primaryKey = "") {
     };
 }
 exports.Relation = Relation;
-function Remote({ accepts = [], accessScopes = [], description = '', http = {}, documented = true, returns = {} }) {
+function Remote(options) {
+    let defaultOptions = Object.assign({
+        accepts: [],
+        accessScopes: [],
+        description: '',
+        http: {},
+        documented: true,
+        returns: {}
+    }, options);
     return function (target, key) {
         let remotes = registry_1.Registry.getProperty(target.constructor.name, 'remotes');
-        let tmp = { accepts, http, returns, documented };
-        if (accessScopes.length > 0)
-            Object.assign(tmp, { accessScopes });
-        if (!_.isEmpty(description))
-            Object.assign(tmp, { description });
+        let tmp = { accepts: defaultOptions.accepts, http: defaultOptions.http, returns: defaultOptions.returns, documented: defaultOptions.documented };
+        if (defaultOptions.accessScopes.length > 0)
+            Object.assign(tmp, { accessScopes: defaultOptions.accessScopes });
+        if (!_.isEmpty(defaultOptions.description))
+            Object.assign(tmp, { description: defaultOptions.description });
         remotes[key] = tmp;
     };
 }

@@ -1,4 +1,3 @@
-import { SampleDao } from "../../spec/server/models/SampleModel";
 import { SampleModel } from './sample.model';
 import { CommonModel, Property } from '../main/models/decorators';
 import { AdvanceDao, AdvanceModel } from './advance.model';

@@ -1,34 +1,35 @@
-export declare function CommonModel({name, base, idInjection, options, mixins, acls, settings, dao, dataSource, publish}: {
-    name?: undefined;
+export interface CommonModelOptions {
+    name?: string;
     base?: string;
     idInjection?: boolean;
-    options?: {
-        validateUpsert: boolean;
-    };
-    mixins?: undefined[];
-    acls?: undefined[];
-    settings?: {};
+    options?: any;
+    mixins?: any[];
+    acls?: any[];
+    settings?: any[];
     dao: any;
-    dataSource: any;
+    dataSource: string;
     publish?: boolean;
-}): (constructor: any) => void;
-export declare function CommonModule({imports, models, middleware, declare}: {
-    imports?: undefined[];
-    models?: undefined[];
-    middleware?: undefined[];
-    declare?: undefined[];
-}): (constructor: any) => void;
+}
+export declare function CommonModel(options: CommonModelOptions): (constructor: any) => void;
+export interface CommonModuleOptions {
+    imports?: any[];
+    models?: any[];
+    middleware?: any[];
+    declare?: any[];
+}
+export declare function CommonModule(options: CommonModuleOptions): (constructor: any) => void;
 export declare function Property(meta: any): (target: any, key: any) => void;
 export declare function Hidden(target: any, key: any): void;
 export declare function Relation(type: any, model: any, foreignKey?: string, primaryKey?: string): (target: any, key: any) => void;
-export declare function Remote({accepts, accessScopes, description, http, documented, returns}: {
-    accepts?: undefined[];
-    accessScopes?: undefined[];
+export interface RemoteOptions {
+    accepts?: any[];
+    accessScopes?: any[];
     description?: string;
-    http?: {};
+    http?: any;
     documented?: boolean;
-    returns?: {};
-}): (target: any, key: any) => void;
+    returns?: any;
+}
+export declare function Remote(options: RemoteOptions): (target: any, key: any) => void;
 export declare function BeforeRemote(name: any): (target: any, key: any) => void;
 export declare function AfterRemote(name: any): (target: any, key: any) => void;
 export declare function Hook(name: any): (target: any, key: any) => void;
