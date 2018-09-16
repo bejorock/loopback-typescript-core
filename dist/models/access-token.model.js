@@ -57,6 +57,9 @@ AccessTokenDao = __decorate([
 ], AccessTokenDao);
 exports.AccessTokenDao = AccessTokenDao;
 let AccessTokenModel = class AccessTokenModel extends persisted_model_1.PersistedModel {
+    //ttl:number
+    //created:Date
+    //settings:any
     validate(cb) {
         if (!cb)
             return new Promise((resolve, reject) => {

@@ -6,9 +6,5 @@ export declare class AccessTokenDao extends PersistedDao {
     resolve<T extends AccessTokenModel>(id: any, cb?: any): Promise<T>;
 }
 export declare class AccessTokenModel extends PersistedModel {
-    id: string;
-    ttl: number;
-    created: Date;
-    settings: any;
     validate(cb?: any): Promise<boolean>;
 }

@@ -1,5 +1,5 @@
 import { PersistedModel, PersistedDao } from './persisted.model';
-import { CommonModel } from './decorators';
+import { CommonModel, Property } from './decorators';
 import { injectable } from 'inversify';
 
 @injectable()
@@ -54,10 +54,9 @@ export class AccessTokenDao extends PersistedDao
 })
 export class AccessTokenModel extends PersistedModel
 {
-	id:string
-	ttl:number
-	created:Date
-	settings:any
+	//ttl:number
+	//created:Date
+	//settings:any
 
 	validate(cb?):Promise<boolean> {
 		if(!cb) return new Promise((resolve, reject) => {
