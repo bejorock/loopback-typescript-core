@@ -9,7 +9,7 @@ export interface CommonModelOptions
 	options?:any
 	mixins?:any[]
 	acls?:any[]
-	settings?:any[]
+	settings?:any
 	dao:any
 	dataSource:string
 	publish?:boolean
