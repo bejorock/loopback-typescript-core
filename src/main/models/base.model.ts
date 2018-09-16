@@ -116,3 +116,7 @@ export class BaseDao {
 	}
 }
 
+export interface ModelFactoryDao
+{
+	ModelClass:any
+}

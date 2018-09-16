@@ -25,3 +25,6 @@ export declare class BaseDao {
     newInstance(seed: any, isCreated?: any, ignore?: any): any;
     private copyFunctions(target, source);
 }
+export interface ModelFactoryDao {
+    ModelClass: any;
+}
