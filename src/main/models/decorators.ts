@@ -81,10 +81,12 @@ export function Hidden(target, key) {
 	hidden.push(key)
 }
 
-export function Relation(type, model, foreignKey = "", primaryKey = "") {
+export function Relation(type, model, foreignKey = "", primaryKey = "", through?) {
 	return function(target, key) {
 		let relations = Registry.getProperty(target.constructor.name, 'relations')
 		relations[key] = { type, model, foreignKey }
+		if(through)
+			relations[key].through = through
 	}
 }
 
