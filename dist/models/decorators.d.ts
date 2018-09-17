@@ -18,7 +18,7 @@ export interface CommonModuleOptions {
     declare?: any[];
 }
 export declare function CommonModule(options: CommonModuleOptions): (constructor: any) => void;
-export declare function Property(meta: any): (target: any, key: any) => void;
+export declare function Property(meta: any, required?: boolean): (target: any, key: any) => void;
 export declare function Hidden(target: any, key: any): void;
 export declare function Relation(type: any, model: any, foreignKey?: string, primaryKey?: string): (target: any, key: any) => void;
 export interface RemoteOptions {

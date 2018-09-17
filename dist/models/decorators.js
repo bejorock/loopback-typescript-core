@@ -45,9 +45,9 @@ function CommonModule(options) {
     };
 }
 exports.CommonModule = CommonModule;
-function Property(meta) {
+function Property(meta, required = false) {
     if (typeof meta === 'string')
-        meta = { type: meta };
+        meta = { type: meta, required };
     return function (target, key) {
         let properties = registry_1.Registry.getProperty(target.constructor.name, 'properties');
         properties[key] = meta;
