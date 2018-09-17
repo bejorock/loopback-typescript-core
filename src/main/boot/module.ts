@@ -37,8 +37,7 @@ export default class Module
 		let properties = this.loadProperties(modelClass) //Registry.getProperty(modelClass.name, 'properties') //modelClass.properties
 		let hidden = this.loadHidden(modelClass)
 		let relations = this.loadRelations(modelClass)
-		console.log(modelClass.name)
-		console.log(methods.getDataSourceName())
+		
 		let ds = this.ctx.getDataSource(methods.getDataSourceName())
 
 		let regex = /(\w+)(Model?)/
@@ -240,7 +239,7 @@ export default class Module
 
 		// boot models
 		if(typeof config === 'string')
-    config = {appRootDir: config}
+    	config = {appRootDir: config}
 
 		// backwards compatibility with loopback's app.boot
 		config.env = config.env || app.get('env');
