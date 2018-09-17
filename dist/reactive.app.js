@@ -4,6 +4,10 @@ class ReactiveApp {
     constructor(app) {
         this.app = app;
     }
+    set(key, value) { this.app.set(key, value); }
+    get(key) { return this.app.get(key); }
+    useAt(path, fn) { this.app.use(path, fn); }
+    use(fn) { this.app.use(fn); }
     getDaos() { return this.app.models; }
     getDao(name) { return this.app.models[name]; }
     getDataSources() { return this.app.datasources; }

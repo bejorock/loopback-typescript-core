@@ -4,6 +4,14 @@ export class ReactiveApp
 {
 	constructor(private app:any) {}
 
+	set(key, value):void { this.app.set(key, value) }
+
+	get(key):any { return this.app.get(key) }
+
+	useAt(path, fn):void { this.app.use(path, fn) }
+
+	use(fn):void { this.app.use(fn) }
+
 	getDaos():any { return this.app.models }
 
 	getDao<T>(name):T { return this.app.models[name] }

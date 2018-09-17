@@ -1,6 +1,10 @@
 export declare class ReactiveApp {
     private app;
     constructor(app: any);
+    set(key: any, value: any): void;
+    get(key: any): any;
+    useAt(path: any, fn: any): void;
+    use(fn: any): void;
     getDaos(): any;
     getDao<T>(name: any): T;
     getDataSources(): any;
