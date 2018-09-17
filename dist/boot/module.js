@@ -68,6 +68,7 @@ let Module = class Module {
         let dao = this.container.resolve(DaoClass);
         dao.dao = daoSeed;
         dao.container = this.container;
+        dao.onInit();
         // inherit model class
         //util.inherits(dao, modelSeed)
         // load remote methods

@@ -55,6 +55,7 @@ let BaseModel = class BaseModel {
     emit(eventName, ctx) {
         this.dao.emit(eventName, ctx);
     }
+    onInit() { }
     get ds() { return this.dao; }
     get ctx() { return this.model; }
     get(name) { return this.model[name]; }
@@ -74,6 +75,7 @@ let BaseDao = class BaseDao {
     emit(eventName, ctx) {
         this.dao.emit(eventName, ctx);
     }
+    onInit() { }
     get ds() { return this.dao; }
     get context() { return this.ctx; }
     newInstance(seed, isCreated, ignore) {
@@ -82,6 +84,7 @@ let BaseDao = class BaseDao {
         tmp.isCreated = isCreated;
         tmp.dao = this.ds;
         tmp.configure(ignore);
+        tmp.onInit();
         // hide enumerable
         let enumerable = registry_1.Registry.getProperty(this.ModelClass.name, 'enumerable');
         for (let key in enumerable)

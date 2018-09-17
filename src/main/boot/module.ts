@@ -57,6 +57,7 @@ export default class Module
 		let dao:BaseDao = this.container.resolve(DaoClass)
 		dao.dao = daoSeed
 		dao.container = this.container
+		dao.onInit()
 		// inherit model class
 		//util.inherits(dao, modelSeed)
 

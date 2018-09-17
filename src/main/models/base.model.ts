@@ -50,6 +50,8 @@ export class BaseModel
 		this.dao.emit(eventName, ctx)
 	}
 
+	onInit() {}
+
 	get ds() { return this.dao }
 	get ctx() { return this.model }
 
@@ -78,6 +80,8 @@ export class BaseDao {
 		this.dao.emit(eventName, ctx)
 	}
 
+	onInit() {}
+
 	protected get ds() { return this.dao  }
 
 	protected get context() { return this.ctx }
@@ -89,6 +93,7 @@ export class BaseDao {
 		tmp.dao = this.ds
 
 		tmp.configure(ignore)
+		tmp.onInit()
 
 		// hide enumerable
 		let enumerable = Registry.getProperty(this.ModelClass.name, 'enumerable')
