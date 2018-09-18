@@ -20,5 +20,5 @@ export default class Module {
     applyMixin(modelClass: any, seed: any): void;
     getContainer(): Container;
     getContext(): ReactiveApp;
-    static boot<T extends Module>(rootModule: new (ctx) => T, config: any): Promise<Module>;
+    static boot<T extends Module>(rootModule: new (ctx) => T, config: any, loopbackApp?: any): Promise<Module>;
 }

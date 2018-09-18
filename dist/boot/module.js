@@ -214,9 +214,13 @@ let Module = class Module {
     }
     getContainer() { return this.container; }
     getContext() { return this.ctx; }
-    static boot(rootModule, config) {
+    static boot(rootModule, config, loopbackApp) {
         return __awaiter(this, void 0, void 0, function* () {
-            let app = loopback_1.default();
+            let app;
+            if (loopbackApp)
+                app = loopbackApp;
+            else
+                app = loopback_1.default();
             // boot models
             if (typeof config === 'string')
                 config = { appRootDir: config };

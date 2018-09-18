@@ -234,8 +234,12 @@ export default class Module
 
 	getContext():ReactiveApp { return this.ctx }
 
-	static async boot<T extends Module>(rootModule: new (ctx) => T, config) {
-		let app = loopback()
+	static async boot<T extends Module>(rootModule: new (ctx) => T, config, loopbackApp?:any) {
+		let app:any
+		if(loopbackApp)
+			app = loopbackApp
+		else
+			app = loopback()
 
 		// boot models
 		if(typeof config === 'string')
