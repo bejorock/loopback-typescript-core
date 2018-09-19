@@ -52,7 +52,7 @@ export interface CommonModuleOptions
 	models?:any[]
 	middleware?:any[]
 	declare?:any[],
-	routers:any[]
+	routers?:any[]
 }
 
 export function CommonModule(options:CommonModuleOptions) {
@@ -65,6 +65,29 @@ export function CommonModule(options:CommonModuleOptions) {
 		meta.middleware = defaultOptions.middleware
 		meta.declare = defaultOptions.declare
 		meta.routers = defaultOptions.routers
+	}
+}
+
+export interface CommonRoute
+{
+	path:string
+	handler?:any
+	protocol?:string
+	load?:any
+}
+
+export interface CommonRouterOptions
+{
+	base?:string
+	routes?:CommonRoute[]
+}
+
+export function CommonRouter(options:CommonRouterOptions) {
+	return function(constructor:any) {
+		let meta = Registry.getProperty(constructor.name, 'meta')
+
+		meta.base = options.base
+		meta.routes = options.routes
 	}
 }
 

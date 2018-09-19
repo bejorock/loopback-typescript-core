@@ -7,7 +7,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const inversify_1 = require("inversify");
+const registry_1 = require("../boot/registry");
 let BaseRouter = class BaseRouter {
+    configure() {
+        this._router = this.newRouter();
+        this.routes.forEach(route => {
+            let handler;
+            if (route.handler)
+                handler = this.container.resolve(route.handler);
+            let childRouter;
+            if (route.load) {
+                childRouter = this.container.resolve(route.load);
+                childRouter.base = route.path;
+                childRouter.container = this.container;
+                let meta = registry_1.Registry.getProperty(route.load.name, 'meta');
+                childRouter.routes = meta.routes;
+                childRouter.configure();
+            }
+            if (route.protocol && handler)
+                this._router[route.protocol](route.path, handler.onRequest);
+            else if (handler)
+                this._router.use(route.path, handler.onRequest);
+            else if (childRouter)
+                this._router.use(route.path, childRouter.onRoute);
+        });
+    }
+    onRoute() { return this._router; }
 };
 BaseRouter = __decorate([
     inversify_1.injectable()

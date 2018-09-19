@@ -175,9 +175,14 @@ let Module = class Module {
         }
     }
     loadRouter(routerClass) {
-        this.container.bind(routerClass).to(routerClass).inSingletonScope();
-        let router = this.container.get(routerClass);
-        this.ctx.registerRouter(router.path, router.onRoute());
+        let meta = registry_1.Registry.getProperty(routerClass.name, 'meta');
+        //this.container.bind(routerClass).to(routerClass).inSingletonScope()
+        let router = this.container.resolve(routerClass);
+        router.base = meta.base;
+        router.routes = meta.routes;
+        router.configure();
+        //this.container.get(routerClass)
+        this.ctx.registerRouter(router.base, router.onRoute());
     }
     loadAll(m) {
         let meta = registry_1.Registry.getProperty(m.constructor.name, 'meta');

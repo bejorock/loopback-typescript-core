@@ -187,10 +187,17 @@ export default class Module
 	}
 
 	loadRouter(routerClass) {
-		this.container.bind(routerClass).to(routerClass).inSingletonScope()
-		let router:Router = this.container.get(routerClass)
+		let meta = Registry.getProperty(routerClass.name, 'meta')
+		
+		//this.container.bind(routerClass).to(routerClass).inSingletonScope()
+		let router:Router = this.container.resolve(routerClass)
+		router.base = meta.base
+		router.routes = meta.routes
 
-		this.ctx.registerRouter(router.path, router.onRoute())
+		router.configure()
+		//this.container.get(routerClass)
+
+		this.ctx.registerRouter(router.base, router.onRoute())
 	}
 
 	loadAll(m:any) {

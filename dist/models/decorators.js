@@ -46,6 +46,14 @@ function CommonModule(options) {
     };
 }
 exports.CommonModule = CommonModule;
+function CommonRouter(options) {
+    return function (constructor) {
+        let meta = registry_1.Registry.getProperty(constructor.name, 'meta');
+        meta.base = options.base;
+        meta.routes = options.routes;
+    };
+}
+exports.CommonRouter = CommonRouter;
 function Property(meta, required = false) {
     if (typeof meta === 'string')
         meta = { type: meta, required };

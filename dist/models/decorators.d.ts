@@ -16,9 +16,20 @@ export interface CommonModuleOptions {
     models?: any[];
     middleware?: any[];
     declare?: any[];
-    routers: any[];
+    routers?: any[];
 }
 export declare function CommonModule(options: CommonModuleOptions): (constructor: any) => void;
+export interface CommonRoute {
+    path: string;
+    handler?: any;
+    protocol?: string;
+    load?: any;
+}
+export interface CommonRouterOptions {
+    base?: string;
+    routes?: CommonRoute[];
+}
+export declare function CommonRouter(options: CommonRouterOptions): (constructor: any) => void;
 export declare function Property(meta: any, required?: boolean): (target: any, key: any) => void;
 export declare function Hidden(target: any, key: any): void;
 export declare function Relation(type: any, model: any, foreignKey?: string, primaryKey?: string, through?: any): (target: any, key: any) => void;
