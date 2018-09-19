@@ -197,7 +197,7 @@ export default class Module
 		router.configure()
 		//this.container.get(routerClass)
 
-		this.ctx.registerRouter(router.base, router.onRoute())
+		this.ctx.registerRouter(router.base, router.onRoute)
 	}
 
 	loadAll(m:any) {

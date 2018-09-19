@@ -6,7 +6,7 @@ export declare type ExpressRouter = express.Router;
 export interface Router {
     base: string;
     routes: CommonRoute[];
-    onRoute(): ExpressRouter;
+    onRoute: ExpressRouter;
     configure(): void;
 }
 export declare abstract class BaseRouter implements Router {
@@ -15,6 +15,6 @@ export declare abstract class BaseRouter implements Router {
     base: string;
     routes: CommonRoute[];
     configure(): void;
-    onRoute(): ExpressRouter;
+    readonly onRoute: ExpressRouter;
     abstract newRouter(): ExpressRouter;
 }

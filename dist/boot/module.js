@@ -182,7 +182,7 @@ let Module = class Module {
         router.routes = meta.routes;
         router.configure();
         //this.container.get(routerClass)
-        this.ctx.registerRouter(router.base, router.onRoute());
+        this.ctx.registerRouter(router.base, router.onRoute);
     }
     loadAll(m) {
         let meta = registry_1.Registry.getProperty(m.constructor.name, 'meta');

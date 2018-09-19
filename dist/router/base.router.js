@@ -32,7 +32,7 @@ let BaseRouter = class BaseRouter {
                 this._router.use(route.path, childRouter.onRoute);
         });
     }
-    onRoute() { return this._router; }
+    get onRoute() { return this._router; }
 };
 BaseRouter = __decorate([
     inversify_1.injectable()

@@ -11,7 +11,7 @@ export interface Router
 	base:string
 	routes:CommonRoute[]
 
-	onRoute():ExpressRouter
+	onRoute:ExpressRouter
 	configure():void
 }
 
@@ -53,7 +53,7 @@ export abstract class BaseRouter implements Router
 		})	
 	}
 
-	onRoute():ExpressRouter { return this._router }
+	get onRoute():ExpressRouter { return this._router }
 
 	abstract newRouter():ExpressRouter
 }
