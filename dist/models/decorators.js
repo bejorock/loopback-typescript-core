@@ -42,6 +42,7 @@ function CommonModule(options) {
         meta.models = defaultOptions.models;
         meta.middleware = defaultOptions.middleware;
         meta.declare = defaultOptions.declare;
+        meta.routers = defaultOptions.routers;
     };
 }
 exports.CommonModule = CommonModule;

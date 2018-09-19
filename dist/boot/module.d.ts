@@ -16,6 +16,7 @@ export default class Module {
     loadAfterRemoteHook(ctxClass: any, modelSeed: any): void;
     loadObserver(ctxClass: any, modelSeed: any): void;
     loadMiddleware(middlewareClass: any): void;
+    loadRouter(routerClass: any): void;
     loadAll(m: any): void;
     applyMixin(modelClass: any, seed: any): void;
     getContainer(): Container;

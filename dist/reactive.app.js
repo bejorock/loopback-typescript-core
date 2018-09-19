@@ -24,6 +24,12 @@ class ReactiveApp {
         else if (protocol.toLowerCase() === 'post')
             this.app.post(path, middleware);
     }
+    registerRouter(path, router) {
+        if (path)
+            this.app.use(path, router);
+        else
+            this.app.use(router);
+    }
     emit(name, value) { this.app.emit(name, value); }
     enableAuth(options) { this.app.enableAuth(options); }
 }

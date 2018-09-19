@@ -14,6 +14,7 @@ export declare class ReactiveApp {
     registerModel(model: any, options?: any): void;
     registerMiddleware(phase: any, middleware: any): void;
     registerPath(protocol: string, path: string, middleware: any): void;
+    registerRouter(path: string, router: any): void;
     emit(name: any, value: any): void;
     enableAuth(options?: any): void;
 }

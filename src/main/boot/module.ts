@@ -7,6 +7,8 @@ import { Container, injectable, inject } from 'inversify';
 import { Registry } from './registry'
 import * as _ from 'lodash'
 import { BaseDao } from '../models/base.model';
+import { Router } from '../router/base.router';
+import { Middleware } from '../middleware/base.middleware';
 
 @injectable()
 export default class Module
@@ -171,7 +173,7 @@ export default class Module
 
 	loadMiddleware(middlewareClass) {
 		this.container.bind(middlewareClass).to(middlewareClass).inSingletonScope()
-		let middleware:any = this.container.get(middlewareClass)
+		let middleware:Middleware = this.container.get(middlewareClass)
 		
 		if(middleware.protocol) {
 			this.ctx.registerPath(middleware.protocol, middleware.path, function(args) {
@@ -182,6 +184,13 @@ export default class Module
 				return middleware.onRequest.apply(middleware, arguments)
 			})
 		}
+	}
+
+	loadRouter(routerClass) {
+		this.container.bind(routerClass).to(routerClass).inSingletonScope()
+		let router:Router = this.container.get(routerClass)
+
+		this.ctx.registerRouter(router.path, router.onRoute())
 	}
 
 	loadAll(m:any) {
@@ -195,6 +204,9 @@ export default class Module
 
 		// setup middleware
 		meta.middleware.forEach(middlewareClass => this.loadMiddleware(middlewareClass))
+
+		// setup routers
+		meta.routers.forEach(routerClass => this.loadRouter(routerClass))
 
 		// setup child modules
 		meta.imports.forEach(i => {

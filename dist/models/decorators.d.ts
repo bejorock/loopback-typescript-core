@@ -16,6 +16,7 @@ export interface CommonModuleOptions {
     models?: any[];
     middleware?: any[];
     declare?: any[];
+    routers: any[];
 }
 export declare function CommonModule(options: CommonModuleOptions): (constructor: any) => void;
 export declare function Property(meta: any, required?: boolean): (target: any, key: any) => void;

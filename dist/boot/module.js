@@ -174,6 +174,11 @@ let Module = class Module {
             });
         }
     }
+    loadRouter(routerClass) {
+        this.container.bind(routerClass).to(routerClass).inSingletonScope();
+        let router = this.container.get(routerClass);
+        this.ctx.registerRouter(router.path, router.onRoute());
+    }
     loadAll(m) {
         let meta = registry_1.Registry.getProperty(m.constructor.name, 'meta');
         // bind declaration
@@ -182,6 +187,8 @@ let Module = class Module {
         meta.models.forEach(modelClass => this.loadModel(modelClass));
         // setup middleware
         meta.middleware.forEach(middlewareClass => this.loadMiddleware(middlewareClass));
+        // setup routers
+        meta.routers.forEach(routerClass => this.loadRouter(routerClass));
         // setup child modules
         meta.imports.forEach(i => {
             let tmp = this.container.resolve(i); //new i(this._ctx)
