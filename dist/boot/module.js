@@ -165,12 +165,16 @@ let Module = class Module {
         let middleware = this.container.get(middlewareClass);
         if (middleware.protocol) {
             this.ctx.registerPath(middleware.protocol, middleware.path, function (args) {
-                return middleware.onRequest.apply(middleware, arguments);
+                return __awaiter(this, arguments, void 0, function* () {
+                    return yield middleware.onRequest.apply(middleware, arguments);
+                });
             });
         }
         else {
             this.ctx.registerMiddleware(middleware.phase, function (args) {
-                return middleware.onRequest.apply(middleware, arguments);
+                return __awaiter(this, arguments, void 0, function* () {
+                    return yield middleware.onRequest.apply(middleware, arguments);
+                });
             });
         }
     }

@@ -176,12 +176,12 @@ export default class Module
 		let middleware:Middleware = this.container.get(middlewareClass)
 		
 		if(middleware.protocol) {
-			this.ctx.registerPath(middleware.protocol, middleware.path, function(args) {
-				return middleware.onRequest.apply(middleware, arguments)
+			this.ctx.registerPath(middleware.protocol, middleware.path, async function(args) {
+				return await middleware.onRequest.apply(middleware, arguments)
 			})
 		} else {
-			this.ctx.registerMiddleware(middleware.phase, function(args) {
-				return middleware.onRequest.apply(middleware, arguments)
+			this.ctx.registerMiddleware(middleware.phase, async function(args) {
+				return await middleware.onRequest.apply(middleware, arguments)
 			})
 		}
 	}
