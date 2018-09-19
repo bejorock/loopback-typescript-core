@@ -28,10 +28,13 @@ export abstract class BaseRouter implements Router
 		this._router = this.newRouter()
 
 		this.routes.forEach(route => {
-			let handler:Middleware
-			if(route.handler)
-				handler = this.container.resolve(route.handler)
-
+			let handlers:Middleware[] = []
+			if(route.handlers) {
+				route.handlers.forEach(handler => {
+					handlers.push(this.container.resolve(handler))
+				})
+			}
+		
 			let childRouter:BaseRouter
 			if(route.load) {
 				childRouter = this.container.resolve(route.load)
@@ -44,10 +47,10 @@ export abstract class BaseRouter implements Router
 				childRouter.configure()
 			}
 
-			if(route.protocol && handler)
-				this._router[route.protocol](route.path, handler.onRequest)
-			else if(handler)
-				this._router.use(route.path, handler.onRequest)
+			if(route.protocol && handlers) 
+				handlers.forEach(handler => this._router[route.protocol](route.path, handler.onRequest))	
+			else if(handlers)
+				handlers.forEach(handler => this._router.use(route.path, handler.onRequest))
 			else if(childRouter)
 				this._router.use(route.path, childRouter.onRoute)
 		})	

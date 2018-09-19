@@ -71,7 +71,7 @@ export function CommonModule(options:CommonModuleOptions) {
 export interface CommonRoute
 {
 	path:string
-	handler?:any
+	handlers?:any[]
 	protocol?:string
 	load?:any
 }

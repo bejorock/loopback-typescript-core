@@ -21,7 +21,7 @@ export interface CommonModuleOptions {
 export declare function CommonModule(options: CommonModuleOptions): (constructor: any) => void;
 export interface CommonRoute {
     path: string;
-    handler?: any;
+    handlers?: any[];
     protocol?: string;
     load?: any;
 }
