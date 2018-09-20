@@ -28,9 +28,14 @@ let BaseRouter = class BaseRouter {
                 });
                 args.push(route.path);
                 handlers.forEach(handler => {
-                    args.push(function (vArgs) {
+                    args.push(function (req, res, next) {
                         return __awaiter(this, arguments, void 0, function* () {
-                            yield handler.onRequest.apply(handler, arguments);
+                            try {
+                                return yield handler.onRequest.apply(handler, arguments);
+                            }
+                            catch (e) {
+                                next(e);
+                            }
                         });
                     });
                 });

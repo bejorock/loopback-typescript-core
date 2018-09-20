@@ -37,8 +37,12 @@ export abstract class BaseRouter implements Router
 
 				args.push(route.path)
 				handlers.forEach(handler => {
-					args.push(async function(vArgs) {
-						await handler.onRequest.apply(handler, arguments)
+					args.push(async function(req, res, next) {
+						try {
+							return await handler.onRequest.apply(handler, arguments)
+						} catch(e) {
+							next(e)
+						}
 					})
 				})
 			}

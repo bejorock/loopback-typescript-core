@@ -7,7 +7,7 @@ import { Container, injectable, inject } from 'inversify';
 import { Registry } from './registry'
 import * as _ from 'lodash'
 import { BaseDao } from '../models/base.model';
-import { Router } from '../router/base.router';
+import { Router, BaseRouter } from '../router/base.router';
 import { Middleware } from '../middleware/base.middleware';
 
 @injectable()
@@ -190,9 +190,10 @@ export default class Module
 		let meta = Registry.getProperty(routerClass.name, 'meta')
 		
 		//this.container.bind(routerClass).to(routerClass).inSingletonScope()
-		let router:Router = this.container.resolve(routerClass)
+		let router:BaseRouter = this.container.resolve(routerClass)
 		router.base = meta.base
 		router.routes = meta.routes
+		router.container = this.container
 
 		router.configure()
 		//this.container.get(routerClass)

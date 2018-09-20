@@ -184,6 +184,7 @@ let Module = class Module {
         let router = this.container.resolve(routerClass);
         router.base = meta.base;
         router.routes = meta.routes;
+        router.container = this.container;
         router.configure();
         //this.container.get(routerClass)
         this.ctx.registerRouter(router.base, router.onRoute);
