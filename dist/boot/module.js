@@ -191,6 +191,8 @@ let Module = class Module {
     }
     loadAll(m) {
         let meta = registry_1.Registry.getProperty(m.constructor.name, 'meta');
+        // bind factories
+        meta.factories.forEach(fn => fn(this.container));
         // bind declaration
         meta.declare.forEach(targetClass => this.container.bind(targetClass).toSelf().inSingletonScope());
         // setup models

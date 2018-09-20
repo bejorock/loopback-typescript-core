@@ -51,8 +51,9 @@ export interface CommonModuleOptions
 	imports?:any[]
 	models?:any[]
 	middleware?:any[]
-	declare?:any[],
+	declare?:any[]
 	routers?:any[]
+	factories?:any[]
 }
 
 export function CommonModule(options:CommonModuleOptions) {
@@ -65,6 +66,7 @@ export function CommonModule(options:CommonModuleOptions) {
 		meta.middleware = defaultOptions.middleware
 		meta.declare = defaultOptions.declare
 		meta.routers = defaultOptions.routers
+		meta.factories = defaultOptions.factories
 	}
 }
 

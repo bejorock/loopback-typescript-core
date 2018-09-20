@@ -204,6 +204,9 @@ export default class Module
 	loadAll(m:any) {
 		let meta = Registry.getProperty(m.constructor.name, 'meta') 
 
+		// bind factories
+		meta.factories.forEach(fn => fn(this.container))
+
 		// bind declaration
 		meta.declare.forEach(targetClass => this.container.bind(targetClass).toSelf().inSingletonScope());
 

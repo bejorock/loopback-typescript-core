@@ -17,6 +17,7 @@ export interface CommonModuleOptions {
     middleware?: any[];
     declare?: any[];
     routers?: any[];
+    factories?: any[];
 }
 export declare function CommonModule(options: CommonModuleOptions): (constructor: any) => void;
 export interface CommonRoute {
