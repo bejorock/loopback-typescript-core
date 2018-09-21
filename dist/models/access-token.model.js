@@ -21,7 +21,7 @@ let AccessTokenDao = class AccessTokenDao extends persisted_model_1.PersistedDao
                 });
             });
         this.ds.createAccessTokenId(cb);
-        return Promise.resolve(null);
+        //return Promise.resolve(null)
     }
     findForRequest(req, options, cb) {
         options = (options ? options : {});
@@ -49,7 +49,7 @@ let AccessTokenDao = class AccessTokenDao extends persisted_model_1.PersistedDao
                 });
             });
         this.ds.resolve(id, cb);
-        return Promise.resolve(null);
+        //return Promise.resolve(null)
     }
 };
 AccessTokenDao = __decorate([
@@ -71,7 +71,7 @@ let AccessTokenModel = class AccessTokenModel extends persisted_model_1.Persiste
                 });
             });
         this.ctx.validate.call(this, cb);
-        return Promise.resolve(false);
+        //return Promise.resolve(false)
     }
 };
 AccessTokenModel = __decorate([

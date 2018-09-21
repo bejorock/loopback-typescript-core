@@ -14,7 +14,7 @@ export class AccessTokenDao extends PersistedDao
 		})
 
 		this.ds.createAccessTokenId(cb)
-		return Promise.resolve(null)
+		//return Promise.resolve(null)
 	}
 
 	findForRequest<T extends AccessTokenModel>(req, options?, cb?):Promise<T> {
@@ -40,7 +40,7 @@ export class AccessTokenDao extends PersistedDao
 		})
 
 		this.ds.resolve(id, cb)
-		return Promise.resolve(null)
+		//return Promise.resolve(null)
 	}
 }
 
@@ -67,6 +67,6 @@ export class AccessTokenModel extends PersistedModel
 		})
 
 		this.ctx.validate.call(this, cb)
-		return Promise.resolve(false)
+		//return Promise.resolve(false)
 	}
 }

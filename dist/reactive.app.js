@@ -26,9 +26,9 @@ class ReactiveApp {
     }
     registerRouter(path, router) {
         if (path)
-            this.app.use(path, router);
+            this.app.middleware('routes', path, router);
         else
-            this.app.use(router);
+            this.app.middleware('routes', router);
     }
     emit(name, value) { this.app.emit(name, value); }
     enableAuth(options) { this.app.enableAuth(options); }
