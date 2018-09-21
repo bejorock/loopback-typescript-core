@@ -12,7 +12,7 @@ export declare class ReactiveApp {
     getParentContext(): any;
     getConfig(name: any): any;
     registerModel(model: any, options?: any): void;
-    registerMiddleware(phase: any, middleware: any): void;
+    registerMiddleware(phase: any, paths: any, middleware?: any): void;
     registerPath(protocol: string, path: string, middleware: any): void;
     registerRouter(path: string, router: any): void;
     emit(name: any, value: any): void;

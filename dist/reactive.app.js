@@ -15,7 +15,13 @@ class ReactiveApp {
     getParentContext() { return this.app; }
     getConfig(name) { return this.app.get(name); }
     registerModel(model, options) { this.app.model(model, Object.assign(options)); }
-    registerMiddleware(phase, middleware) { this.app.middleware(phase, middleware); }
+    registerMiddleware(phase, paths, middleware) {
+        if (typeof paths === 'function') {
+            middleware = paths;
+            paths = undefined;
+        }
+        this.app.middleware(phase, paths, middleware);
+    }
     registerPath(protocol, path, middleware) {
         if (!protocol)
             this.app.use(path, middleware);

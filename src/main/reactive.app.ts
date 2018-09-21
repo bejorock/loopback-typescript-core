@@ -26,7 +26,14 @@ export class ReactiveApp
 
 	registerModel(model, options?) { this.app.model(model, Object.assign(options)) }
 
-	registerMiddleware(phase, middleware) { this.app.middleware(phase, middleware) }
+	registerMiddleware(phase, paths, middleware?) { 
+		if(typeof paths === 'function') {
+			middleware = paths
+			paths = undefined
+		}
+
+		this.app.middleware(phase, paths, middleware)
+	}
 
 	registerPath(protocol:string, path:string, middleware) {
 		if(!protocol) this.app.use(path, middleware)
