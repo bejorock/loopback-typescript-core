@@ -14,7 +14,7 @@ import { HelloMiddleware } from './hello.middleware';
 @CommonModule({
   declare: [Vehicle],
   middleware: [HelloMiddleware],
-  models: [AdvanceModel, MediumModel, AccessTokenModel, BelongsToModel, TokenModel]
+  models: [AdvanceModel, MediumModel, AccessTokenModel, BelongsToModel, TokenModel, SampleModel]
   //models: [SampleModel, AdvanceModel]
 })
 class SampleAppModule extends Module
@@ -32,6 +32,14 @@ process.on('unhandledRejection', (reason, promise) => {
 
 Module.boot(SampleAppModule, path.resolve(__dirname, '../resources')).then((module:Module) => {
   module.getContext().enableAuth({model: "DefaultAccessToken"})
+
+  
+  module.getContext().getParentContext().models.Role.registerResolver('authorizedScopes', function(role, ctx, cb) {
+    console.log(role)
+    console.log(ctx.model.definition.settings.acls)
+
+    cb(null, true)
+  })
 
   // start the web server
   let server = http.createServer(module.getContext().getParentContext())

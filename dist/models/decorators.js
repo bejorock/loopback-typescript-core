@@ -37,7 +37,7 @@ exports.CommonModel = CommonModel;
 function CommonModule(options) {
     return function (constructor) {
         let meta = registry_1.Registry.getProperty(constructor.name, 'meta');
-        let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [] }, options);
+        let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [], routers: [], factories: [] }, options);
         meta.imports = defaultOptions.imports;
         meta.models = defaultOptions.models;
         meta.middleware = defaultOptions.middleware;

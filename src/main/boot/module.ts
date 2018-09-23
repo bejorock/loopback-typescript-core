@@ -9,6 +9,7 @@ import * as _ from 'lodash'
 import { BaseDao } from '../models/base.model';
 import { Router, BaseRouter } from '../router/base.router';
 import { Middleware } from '../middleware/base.middleware';
+import { ErrorMiddleware } from '../middleware/error.middleware';
 
 @injectable()
 export default class Module
@@ -175,14 +176,28 @@ export default class Module
 		this.container.bind(middlewareClass).to(middlewareClass).inSingletonScope()
 		let middleware:Middleware = this.container.get(middlewareClass)
 		
+		let handler:Function
+		if(middleware instanceof ErrorMiddleware)
+			handler = async function(err, req, res, next) {
+				try {
+					await middleware.onRequest.apply(middleware, arguments)
+				} catch(e) {
+					next(e)
+				}
+			}
+		else
+			handler = async function(req, res, next) {
+				try {
+					await middleware.onRequest.apply(middleware, arguments)
+				} catch(e) {
+					next(e)
+				}
+			}
+
 		if(middleware.protocol) {
-			this.ctx.registerPath(middleware.protocol, middleware.path, async function(args) {
-				return await middleware.onRequest.apply(middleware, arguments)
-			})
+			this.ctx.registerMiddleware(middleware.protocol, middleware.path, handler)
 		} else {
-			this.ctx.registerMiddleware(middleware.phase, async function(args) {
-				return await middleware.onRequest.apply(middleware, arguments)
-			})
+			this.ctx.registerMiddleware(middleware.phase, handler)
 		}
 	}
 

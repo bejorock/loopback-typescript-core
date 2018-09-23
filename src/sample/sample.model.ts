@@ -39,7 +39,7 @@ export class SampleDao extends PersistedDao
 @CommonModel({
 	dao: SampleDao,
 	dataSource: "db",
-	/*acls: [{
+	acls: [{
 		"accessType": "*",
 		"principalType": "ROLE",
 		"principalId": "$unauthenticated",
@@ -47,10 +47,11 @@ export class SampleDao extends PersistedDao
 	}, {
 		"accessType": "*",
 		"principalType": "ROLE",
-		"principalId": "$authenticated",
+		"principalId": "authorizedScopes",
 		"permission": "ALLOW",
-		"property": "find"
-	}]*/
+		"property": "find",
+		"accessScopes": ["read:sample", "write:sample"]
+	}]
 })
 export class SampleModel extends PersistedModel
 {

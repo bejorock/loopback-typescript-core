@@ -107,10 +107,10 @@ export class BaseDao {
 		let self = this
 		let properties = Object.getOwnPropertyNames(source.prototype)
 		properties.forEach(key => {
-			if(typeof source.prototype[key] === 'function' && key !== 'constructor' && key !== 'compile') {
+			if(typeof source.prototype[key] === 'function' && key !== 'constructor' && key !== 'compile' && key != 'on' && key !== 'emit') {
 				//console.log('copy function ' + key)
 				target[key] = function(args) {
-					//console.log('called function ' + key)
+					console.log('called function ' + key)
 					return source.prototype[key].apply(self, arguments)
 				}
 			}

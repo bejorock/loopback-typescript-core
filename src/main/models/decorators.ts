@@ -59,7 +59,7 @@ export interface CommonModuleOptions
 export function CommonModule(options:CommonModuleOptions) {
 	return function(constructor:any) {
 		let meta = Registry.getProperty(constructor.name, 'meta')
-		let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [] }, options)
+		let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [], routers: [], factories: [] }, options)
 
 		meta.imports = defaultOptions.imports
 		meta.models = defaultOptions.models

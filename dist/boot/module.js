@@ -35,6 +35,7 @@ const reactive_app_1 = require("../reactive.app");
 const inversify_1 = require("inversify");
 const registry_1 = require("./registry");
 const _ = __importStar(require("lodash"));
+const error_middleware_1 = require("../middleware/error.middleware");
 let Module = class Module {
     configure(parentContainer) {
         // start up models
@@ -163,19 +164,34 @@ let Module = class Module {
     loadMiddleware(middlewareClass) {
         this.container.bind(middlewareClass).to(middlewareClass).inSingletonScope();
         let middleware = this.container.get(middlewareClass);
-        if (middleware.protocol) {
-            this.ctx.registerPath(middleware.protocol, middleware.path, function (args) {
+        let handler;
+        if (middleware instanceof error_middleware_1.ErrorMiddleware)
+            handler = function (err, req, res, next) {
                 return __awaiter(this, arguments, void 0, function* () {
-                    return yield middleware.onRequest.apply(middleware, arguments);
+                    try {
+                        yield middleware.onRequest.apply(middleware, arguments);
+                    }
+                    catch (e) {
+                        next(e);
+                    }
                 });
-            });
+            };
+        else
+            handler = function (req, res, next) {
+                return __awaiter(this, arguments, void 0, function* () {
+                    try {
+                        yield middleware.onRequest.apply(middleware, arguments);
+                    }
+                    catch (e) {
+                        next(e);
+                    }
+                });
+            };
+        if (middleware.protocol) {
+            this.ctx.registerMiddleware(middleware.protocol, middleware.path, handler);
         }
         else {
-            this.ctx.registerMiddleware(middleware.phase, function (args) {
-                return __awaiter(this, arguments, void 0, function* () {
-                    return yield middleware.onRequest.apply(middleware, arguments);
-                });
-            });
+            this.ctx.registerMiddleware(middleware.phase, handler);
         }
     }
     loadRouter(routerClass) {
