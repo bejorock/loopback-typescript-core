@@ -187,8 +187,11 @@ let Module = class Module {
                     }
                 });
             };
-        if (middleware.protocol) {
-            this.ctx.registerMiddleware(middleware.protocol, middleware.path, handler);
+        if (middleware.path && Array.isArray(middleware.path)) {
+            middleware.path.forEach(p => this.ctx.registerMiddleware(middleware.phase, p, handler));
+        }
+        else if (middleware.path) {
+            this.ctx.registerMiddleware(middleware.phase, middleware.path, handler);
         }
         else {
             this.ctx.registerMiddleware(middleware.phase, handler);
