@@ -6,7 +6,7 @@ export interface BaseMiddleware
 	path:string
 	protocol:string
 
-	onRequest(req, res, next):any
+	onRequest(req, res, next):Promise<void>
 }
 
 @injectable()
@@ -20,5 +20,5 @@ export abstract class Middleware implements BaseMiddleware
 
 	abstract path
 	abstract protocol
-	abstract onRequest(req, res, next):any
+	abstract onRequest(req, res, next):Promise<void>
 }

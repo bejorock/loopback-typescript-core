@@ -4,7 +4,7 @@ export interface BaseErrorMiddleware
 {
 	phase:string
 
-	onRequest(err, req, res, next):any
+	onRequest(err, req, res, next):Promise<void>
 }
 
 @injectable()
@@ -16,5 +16,5 @@ export abstract class ErrorMiddleware implements BaseErrorMiddleware
 		this.phase = phase
 	}
 
-	abstract onRequest(err, req, res, next):any
+	abstract onRequest(err, req, res, next):Promise<void>
 }

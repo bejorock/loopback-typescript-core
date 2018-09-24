@@ -7,7 +7,7 @@ export class HelloMiddleware extends Middleware
 	path = "/hello"
 	protocol = "get"
 
-	onRequest(req: any, res: any, next: any) {
+	async onRequest(req: any, res: any, next: any) {
 		res.send('hello world')	
 	}
 }
