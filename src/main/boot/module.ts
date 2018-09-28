@@ -24,8 +24,8 @@ export default class Module
 		// this.ctx = new ReactiveApp(_ctx)
 
 		// setup container
-		this.container = new Container({ autoBindInjectable: true })
-		this.container.parent = parentContainer
+		this.container = parentContainer //new Container({ autoBindInjectable: true })
+		//this.container.parent = parentContainer
 		//this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
 		
 		// register child containers

@@ -41,8 +41,8 @@ let Module = class Module {
         // start up models
         // this.ctx = new ReactiveApp(_ctx)
         // setup container
-        this.container = new inversify_1.Container({ autoBindInjectable: true });
-        this.container.parent = parentContainer;
+        this.container = parentContainer; //new Container({ autoBindInjectable: true })
+        //this.container.parent = parentContainer
         //this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
         // register child containers
         this.loadAll(this);
