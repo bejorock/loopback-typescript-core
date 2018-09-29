@@ -210,6 +210,13 @@ let Module = class Module {
     }
     loadAll(m) {
         let meta = registry_1.Registry.getProperty(m.constructor.name, 'meta');
+        // setup child modules
+        meta.imports.forEach(i => {
+            let tmp = this.container.resolve(i); //new i(this._ctx)
+            tmp.configure(this.container);
+            //tmp.getContainer().parent = this.container
+            this.loadAll(tmp);
+        });
         // bind factories
         meta.factories.forEach(fn => fn(this.container));
         // bind declaration
@@ -220,13 +227,6 @@ let Module = class Module {
         meta.middleware.forEach(middlewareClass => this.loadMiddleware(middlewareClass));
         // setup routers
         meta.routers.forEach(routerClass => this.loadRouter(routerClass));
-        // setup child modules
-        meta.imports.forEach(i => {
-            let tmp = this.container.resolve(i); //new i(this._ctx)
-            tmp.configure(this.container);
-            //tmp.getContainer().parent = this.container
-            this.loadAll(tmp);
-        });
     }
     applyMixin(modelClass, seed) {
         let methods = registry_1.Registry.getProperty(modelClass.name, 'methods');

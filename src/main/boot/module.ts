@@ -221,6 +221,14 @@ export class Module
 	loadAll(m:any) {
 		let meta = Registry.getProperty(m.constructor.name, 'meta') 
 
+		// setup child modules
+		meta.imports.forEach(i => {
+			let tmp:Module = this.container.resolve(i); //new i(this._ctx)
+			tmp.configure(this.container)
+			//tmp.getContainer().parent = this.container
+			this.loadAll(tmp)
+		});
+
 		// bind factories
 		meta.factories.forEach(fn => fn(this.container))
 
@@ -235,14 +243,6 @@ export class Module
 
 		// setup routers
 		meta.routers.forEach(routerClass => this.loadRouter(routerClass))
-
-		// setup child modules
-		meta.imports.forEach(i => {
-			let tmp:Module = this.container.resolve(i); //new i(this._ctx)
-			tmp.configure(this.container)
-			//tmp.getContainer().parent = this.container
-			this.loadAll(tmp)
-		});
 	}
 
 	applyMixin(modelClass, seed) {
