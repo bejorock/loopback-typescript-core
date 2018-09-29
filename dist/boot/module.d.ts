@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { ReactiveApp } from '../reactive.app';
 import { Container } from 'inversify';
 import { BaseDao } from '../models/base.model';
-export default class Module {
+export declare class Module {
     protected ctx: ReactiveApp;
     private container;
     configure(parentContainer?: Container): void;

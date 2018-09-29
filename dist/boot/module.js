@@ -285,5 +285,5 @@ __decorate([
 Module = __decorate([
     inversify_1.injectable()
 ], Module);
-exports.default = Module;
+exports.Module = Module;
 //# sourceMappingURL=module.js.map

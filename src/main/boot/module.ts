@@ -12,7 +12,7 @@ import { Middleware } from '../middleware/base.middleware';
 import { ErrorMiddleware } from '../middleware/error.middleware';
 
 @injectable()
-export default class Module
+export class Module
 {
 	@inject(ReactiveApp)
 	protected ctx:ReactiveApp
