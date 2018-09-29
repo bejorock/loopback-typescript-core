@@ -36,8 +36,33 @@ const inversify_1 = require("inversify");
 const registry_1 = require("./registry");
 const _ = __importStar(require("lodash"));
 const error_middleware_1 = require("../middleware/error.middleware");
+const Bunyan = __importStar(require("bunyan"));
+const stream_1 = require("stream");
+const dateformat_1 = __importDefault(require("dateformat"));
+const safe_1 = __importDefault(require("colors/safe"));
+const consoleOut = new stream_1.Writable({ objectMode: true });
+consoleOut._write = (chunk, enc, next) => {
+    let obj = JSON.parse(chunk.toString());
+    if (obj.level == 50 || obj.level == 60)
+        console.log(safe_1.default.red(`[${dateformat_1.default(new Date(obj.time), 'dd-mm-yy HH:MM:ss')}] ERROR: ${obj.name}: ${obj.msg}`));
+    else if (obj.level == 20)
+        console.log(safe_1.default.cyan(`[${dateformat_1.default(new Date(obj.time), 'dd-mm-yy HH:MM:ss')}] DEBUG: ${obj.name}: ${obj.msg}`));
+    else if (obj.level == 40)
+        console.log(safe_1.default.yellow(`[${dateformat_1.default(new Date(obj.time), 'dd-mm-yy HH:MM:ss')}] WARN: ${obj.name}: ${obj.msg}`));
+    else if (obj.level == 10)
+        console.log(safe_1.default.blue(`[${dateformat_1.default(new Date(obj.time), 'dd-mm-yy HH:MM:ss')}] WARN: ${obj.name}: ${obj.msg}`));
+    else
+        console.log(`[${dateformat_1.default(new Date(obj.time), 'dd-mm-yy HH:MM:ss')}] INFO: ${obj.name}: ${obj.msg}`);
+    next();
+};
 let Module = class Module {
     configure(parentContainer) {
+        this.log = Bunyan.createLogger({
+            name: this.constructor.name,
+            stream: consoleOut,
+            level: 'debug'
+        });
+        this.log.debug(`load module ${this.constructor.name}`);
         // start up models
         // this.ctx = new ReactiveApp(_ctx)
         // setup container
@@ -48,6 +73,7 @@ let Module = class Module {
         this.loadAll(this);
     }
     loadModel(modelClass) {
+        this.log.debug(`load model ${modelClass.name} of module ${this.constructor.name}`);
         let methods = registry_1.Registry.getProperty(modelClass.name, 'methods');
         //console.log(modelClass.name)
         //console.log(methods)
@@ -162,6 +188,7 @@ let Module = class Module {
         }
     }
     loadMiddleware(middlewareClass) {
+        this.log.debug(`load middleware ${middlewareClass.name} of module ${this.constructor.name}`);
         this.container.bind(middlewareClass).to(middlewareClass).inSingletonScope();
         let middleware = this.container.get(middlewareClass);
         let handler;
@@ -198,6 +225,7 @@ let Module = class Module {
         }
     }
     loadRouter(routerClass) {
+        this.log.debug(`load router ${routerClass.name} of module ${this.constructor.name}`);
         let meta = registry_1.Registry.getProperty(routerClass.name, 'meta');
         //this.container.bind(routerClass).to(routerClass).inSingletonScope()
         let router = this.container.resolve(routerClass);

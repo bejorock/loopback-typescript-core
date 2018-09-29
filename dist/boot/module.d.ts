@@ -5,6 +5,7 @@ import { BaseDao } from '../models/base.model';
 export declare class Module {
     protected ctx: ReactiveApp;
     private container;
+    private log;
     configure(parentContainer?: Container): void;
     loadModel(modelClass: any): void;
     loadProperties(modelClass: any): any;
