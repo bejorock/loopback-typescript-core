@@ -66,14 +66,14 @@ let Module = class Module {
         // start up models
         // this.ctx = new ReactiveApp(_ctx)
         // setup container
-        this.container = parentContainer; //new Container({ autoBindInjectable: true })
-        //this.container.parent = parentContainer
+        this.container = new inversify_1.Container({ autoBindInjectable: true });
+        this.container.parent = parentContainer;
         //this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
         // register child containers
         this.loadAll(this);
     }
     loadModel(modelClass) {
-        this.log.debug(`load model ${modelClass.name} of module ${this.constructor.name}`);
+        this.log.debug(`load model ${modelClass.name}`);
         let methods = registry_1.Registry.getProperty(modelClass.name, 'methods');
         //console.log(modelClass.name)
         //console.log(methods)
@@ -188,7 +188,7 @@ let Module = class Module {
         }
     }
     loadMiddleware(middlewareClass) {
-        this.log.debug(`load middleware ${middlewareClass.name} of module ${this.constructor.name}`);
+        this.log.debug(`load middleware ${middlewareClass.name}`);
         this.container.bind(middlewareClass).to(middlewareClass).inSingletonScope();
         let middleware = this.container.get(middlewareClass);
         let handler;
@@ -225,7 +225,7 @@ let Module = class Module {
         }
     }
     loadRouter(routerClass) {
-        this.log.debug(`load router ${routerClass.name} of module ${this.constructor.name}`);
+        this.log.debug(`load router ${routerClass.name}`);
         let meta = registry_1.Registry.getProperty(routerClass.name, 'meta');
         //this.container.bind(routerClass).to(routerClass).inSingletonScope()
         let router = this.container.resolve(routerClass);
@@ -243,7 +243,7 @@ let Module = class Module {
             let tmp = this.container.resolve(i); //new i(this._ctx)
             tmp.configure(this.container);
             //tmp.getContainer().parent = this.container
-            this.loadAll(tmp);
+            //tmp.loadAll(tmp)
         });
         // bind factories
         meta.factories.forEach(fn => fn(this.container));

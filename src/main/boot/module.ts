@@ -54,8 +54,8 @@ export class Module
 		// this.ctx = new ReactiveApp(_ctx)
 
 		// setup container
-		this.container = parentContainer //new Container({ autoBindInjectable: true })
-		//this.container.parent = parentContainer
+		this.container = new Container({ autoBindInjectable: true })
+		this.container.parent = parentContainer
 		//this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
 		
 		// register child containers
@@ -63,7 +63,7 @@ export class Module
 	}
 
 	loadModel(modelClass) {
-		this.log.debug(`load model ${modelClass.name} of module ${this.constructor.name}`)
+		this.log.debug(`load model ${modelClass.name}`)
 
 		let methods = Registry.getProperty(modelClass.name, 'methods') 
 		//console.log(modelClass.name)
@@ -205,7 +205,7 @@ export class Module
 	}
 
 	loadMiddleware(middlewareClass) {
-		this.log.debug(`load middleware ${middlewareClass.name} of module ${this.constructor.name}`)
+		this.log.debug(`load middleware ${middlewareClass.name}`)
 
 		this.container.bind(middlewareClass).to(middlewareClass).inSingletonScope()
 		let middleware:Middleware = this.container.get(middlewareClass)
@@ -238,7 +238,7 @@ export class Module
 	}
 
 	loadRouter(routerClass) {
-		this.log.debug(`load router ${routerClass.name} of module ${this.constructor.name}`)
+		this.log.debug(`load router ${routerClass.name}`)
 
 		let meta = Registry.getProperty(routerClass.name, 'meta')
 		
@@ -262,7 +262,7 @@ export class Module
 			let tmp:Module = this.container.resolve(i); //new i(this._ctx)
 			tmp.configure(this.container)
 			//tmp.getContainer().parent = this.container
-			this.loadAll(tmp)
+			//tmp.loadAll(tmp)
 		});
 
 		// bind factories
