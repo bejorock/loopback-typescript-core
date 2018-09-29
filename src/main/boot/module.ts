@@ -14,6 +14,9 @@ import * as Bunyan from 'bunyan';
 import { Writable } from 'stream';
 import dateFormat from 'dateformat';
 import colors from 'colors/safe';
+import yargs = require('yargs');
+
+const argv = yargs.argv
 
 const consoleOut = new Writable({objectMode: true})
 consoleOut._write = (chunk, enc, next) => {
@@ -46,7 +49,7 @@ export class Module
 		this.log = Bunyan.createLogger({
 			name: this.constructor.name,
 			stream: consoleOut,
-			level: 'debug'
+			level: (argv.log ? argv.log : 'info')
 		})
 		
 		this.log.debug(`load module ${this.constructor.name}`)
@@ -54,8 +57,8 @@ export class Module
 		// this.ctx = new ReactiveApp(_ctx)
 
 		// setup container
-		this.container = new Container({ autoBindInjectable: true })
-		this.container.parent = parentContainer
+		this.container = parentContainer //new Container({ autoBindInjectable: true })
+		//this.container.parent = parentContainer
 		//this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
 		
 		// register child containers

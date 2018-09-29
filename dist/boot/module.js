@@ -40,6 +40,8 @@ const Bunyan = __importStar(require("bunyan"));
 const stream_1 = require("stream");
 const dateformat_1 = __importDefault(require("dateformat"));
 const safe_1 = __importDefault(require("colors/safe"));
+const yargs = require("yargs");
+const argv = yargs.argv;
 const consoleOut = new stream_1.Writable({ objectMode: true });
 consoleOut._write = (chunk, enc, next) => {
     let obj = JSON.parse(chunk.toString());
@@ -60,14 +62,14 @@ let Module = class Module {
         this.log = Bunyan.createLogger({
             name: this.constructor.name,
             stream: consoleOut,
-            level: 'debug'
+            level: (argv.log ? argv.log : 'info')
         });
         this.log.debug(`load module ${this.constructor.name}`);
         // start up models
         // this.ctx = new ReactiveApp(_ctx)
         // setup container
-        this.container = new inversify_1.Container({ autoBindInjectable: true });
-        this.container.parent = parentContainer;
+        this.container = parentContainer; //new Container({ autoBindInjectable: true })
+        //this.container.parent = parentContainer
         //this.container.bind<ReactiveApp>(ReactiveApp).toConstantValue(this.ctx)
         // register child containers
         this.loadAll(this);
