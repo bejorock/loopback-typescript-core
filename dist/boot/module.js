@@ -247,12 +247,12 @@ let Module = class Module {
             //tmp.getContainer().parent = this.container
             //tmp.loadAll(tmp)
         });
-        // bind factories
-        meta.factories.forEach(fn => fn(this.container));
         // bind declaration
         meta.declare.forEach(targetClass => this.container.bind(targetClass).toSelf().inSingletonScope());
         // setup models
         meta.models.forEach(modelClass => this.loadModel(modelClass));
+        // bind factories
+        meta.factories.forEach(fn => fn(this.container));
         // setup middleware
         meta.middleware.forEach(middlewareClass => this.loadMiddleware(middlewareClass));
         // setup routers
