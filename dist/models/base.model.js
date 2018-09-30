@@ -98,7 +98,6 @@ let BaseDao = class BaseDao {
             if (typeof source.prototype[key] === 'function' && key !== 'constructor' && key !== 'compile' && key != 'on' && key !== 'emit') {
                 //console.log('copy function ' + key)
                 target[key] = function (args) {
-                    console.log('called function ' + key);
                     return source.prototype[key].apply(self, arguments);
                 };
             }
