@@ -22,11 +22,11 @@ export declare class PersistedDao extends BaseDao {
 }
 export declare class PersistedModel extends BaseModel {
     id: any;
-    destroy(cb?: any): Promise<void>;
+    destroy(options?: any, cb?: any): Promise<void>;
     reload(cb?: any): Promise<this>;
     replaceAttributes(data: any, options: any, cb?: any): Promise<this>;
     save(options: any, cb?: any): Promise<this>;
-    updateAttribute(name: any, value: any, cb?: any): Promise<this>;
-    updateAttributes(data: any, cb?: any): Promise<this>;
+    updateAttribute(name: any, value: any, options?: any, cb?: any): Promise<this>;
+    updateAttributes(data: any, options?: any, cb?: any): Promise<this>;
     protected clone(instance: any, isCreated?: any): any;
 }

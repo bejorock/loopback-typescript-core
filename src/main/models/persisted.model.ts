@@ -23,12 +23,12 @@ export class PersistedDao extends BaseDao
 
 		where = (where ? where : {});
 		if(cb) {
-			this.ds.count(where, cb)
+			this.ds.count(where, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.count(where, (err, count) => {
+				this.ds.count(where, options, (err, count) => {
 					if(err) reject(err)
 					else resolve(count)
 				})
@@ -45,7 +45,7 @@ export class PersistedDao extends BaseDao
 		}
 
 		if(cb) {
-			this.ds.create(data, (err, model) => {
+			this.ds.create(data, options, (err, model) => {
 				if(err) return cb(err)
 				cb(null, this.getInstance(model))
 			})
@@ -53,7 +53,7 @@ export class PersistedDao extends BaseDao
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.create(data, (err, models) => {
+				this.ds.create(data, options, (err, models) => {
 					if(err) reject(err)
 					else if(!models) resolve(null)
 					else if(_.isEmpty(models)) resolve(models)
@@ -72,12 +72,12 @@ export class PersistedDao extends BaseDao
 
 		where = (where ? where : {})
 		if(cb) {
-			this.ds.destroyAll(where, cb)
+			this.ds.destroyAll(where, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.destroyAll(where, (err, info, count) => {
+				this.ds.destroyAll(where, options, (err, info, count) => {
 					if(err) reject(err)
 					else resolve({info, count})
 				})	
@@ -92,12 +92,12 @@ export class PersistedDao extends BaseDao
 		}
 
 		if(cb) {
-			this.ds.destroyById(id, cb)
+			this.ds.destroyById(id, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.destroyById(id, (err) => {
+				this.ds.destroyById(id, options, (err) => {
 					if(err) reject(err)
 					else resolve(id)
 				})
@@ -112,12 +112,12 @@ export class PersistedDao extends BaseDao
 		}
 
 		if(cb) {
-			this.ds.exists(id, cb)
+			this.ds.exists(id, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.exists(id, (err, exists) => {
+				this.ds.exists(id, options, (err, exists) => {
 					if(err) reject(err)
 					else resolve(exists)
 				})
@@ -154,12 +154,12 @@ export class PersistedDao extends BaseDao
 
 		filter = (filter ? filter : {})
 		if(cb) {
-			this.ds.findById(id, filter, cb)
+			this.ds.findById(id, filter, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.findById(id, filter, (err, instance) => {
+				this.ds.findById(id, filter, options, (err, instance) => {
 					if(err) reject(err)
 					else if(!instance) resolve(null)
 					else resolve(this.getInstance(instance))
@@ -176,12 +176,12 @@ export class PersistedDao extends BaseDao
 
 		filter = (filter ? filter : {})
 		if(cb) {
-			this.ds.findOne(filter, cb)
+			this.ds.findOne(filter, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.findOne(filter, (err, instance) => {
+				this.ds.findOne(filter, options, (err, instance) => {
 					if(err) reject(err)
 					else if(!instance) resolve(null)
 					else resolve(this.getInstance(instance))
@@ -198,12 +198,12 @@ export class PersistedDao extends BaseDao
 
 		filter = (filter ? filter : {})
 		if(cb) {
-			this.ds.findOrCreate(filter, data, cb)
+			this.ds.findOrCreate(filter, data, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.findOrCreate(filter, data, (err, instance, created) => {
+				this.ds.findOrCreate(filter, data, options, (err, instance, created) => {
 					if(err) reject(err)
 					else if(!instance) resolve(null)
 					else resolve(this.getInstance(instance, created))
@@ -262,12 +262,12 @@ export class PersistedDao extends BaseDao
 
 		where = (where ? where : {})
 		if(cb) {
-			this.ds.updateAll(where, data, cb)
+			this.ds.updateAll(where, data, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.updateAll(where, data, (err, info, count) => {
+				this.ds.updateAll(where, data, options, (err, info, count) => {
 					if(err) reject(err)
 					else resolve({info, count})
 				})
@@ -282,12 +282,12 @@ export class PersistedDao extends BaseDao
 		}
 
 		if(cb) {
-			this.ds.upsert(data, cb)
+			this.ds.upsert(data, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.upsert(data, (err, instance) => {
+				this.ds.upsert(data, options, (err, instance) => {
 					if(err) reject(err)
 					else if(!instance) resolve(null)
 					else resolve(this.getInstance(instance))
@@ -304,12 +304,12 @@ export class PersistedDao extends BaseDao
 
 		where = (where ? where : {})
 		if(cb) {
-			this.ds.upsertWithWhere(where, data, cb)
+			this.ds.upsertWithWhere(where, data, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.upsertWithWhere(where, data, (err, instance) => {
+				this.ds.upsertWithWhere(where, data, options, (err, instance) => {
 					if(err) reject(err)
 					else if(!instance) resolve(null)
 					else resolve(this.getInstance(instance))
@@ -342,13 +342,18 @@ export class PersistedModel extends BaseModel
 		this.isCreated = isCreated
 	}*/
 
-	destroy(cb?):Promise<void> {
+	destroy(options?, cb?):Promise<void> {
+		if(typeof options === 'function') {
+			cb = options
+			options = undefined
+		}
+
 		if(cb) {
-			this.ctx.destroy.call(this, cb)
+			this.ctx.destroy.call(this, options, cb)
 			return Promise.resolve()
 		}
 		return new Promise((resolve, reject) => {
-			this.ctx.destroy.call(this, () => {
+			this.ctx.destroy.call(this, options, () => {
 				resolve()
 			})
 		})
@@ -404,14 +409,19 @@ export class PersistedModel extends BaseModel
 		}
 	}
 
-	updateAttribute(name, value, cb?):Promise<this> {
+	updateAttribute(name, value, options?, cb?):Promise<this> {
+		if(typeof options === 'function') {
+			cb = options
+			options = undefined
+		}
+
 		if(cb) {
-			this.ctx.updateAttribute.call(this, name, value, cb)
+			this.ctx.updateAttribute.call(this, name, value, options, cb)
 			return Promise.resolve(this)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ctx.updateAttribute.call(this, name, value, (err, instance) => {
+				this.ctx.updateAttribute.call(this, name, value, options, (err, instance) => {
 					if(err) reject(err)
 					else if(!instance) resolve(null)
 					else resolve(this.clone(instance))
@@ -420,14 +430,19 @@ export class PersistedModel extends BaseModel
 		}
 	}
 
-	updateAttributes(data, cb?):Promise<this> {
+	updateAttributes(data, options?, cb?):Promise<this> {
+		if(typeof options === 'function') {
+			cb = options
+			options = undefined
+		}
+
 		if(cb) {
-			this.ctx.updateAttributes.call(this, data, cb)
+			this.ctx.updateAttributes.call(this, data, options, cb)
 			return Promise.resolve(this)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ctx.updateAttributes.call(this, data, (err, instance) => {
+				this.ctx.updateAttributes.call(this, data, options, (err, instance) => {
 					if(err) reject(err)
 					else if(!instance) resolve(null)
 					else resolve(this.clone(instance))
