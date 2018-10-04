@@ -27,6 +27,8 @@ export class BaseModel
 		hideProperty(this, 'model')
 		hideProperty(this, 'dao')
 
+		let relations = Registry.getProperty(this.constructor.name, 'relations')
+
 		for(let key in this.model) {
 			if(key !== 'id' && typeof this.model[key] !== 'function') {
 				if(ignore) {
@@ -38,6 +40,8 @@ export class BaseModel
 
 				if(key.startsWith('__'))
 					hideProperty(this, key)
+			} else  if(relations[key]) {
+				(<any>this)[key] = this.model[key]()
 			}
 		}
 	}
