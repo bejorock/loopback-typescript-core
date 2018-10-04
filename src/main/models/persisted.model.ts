@@ -133,12 +133,12 @@ export class PersistedDao extends BaseDao
 
 		filter = (filter ? filter : {})
 		if(cb) {
-			this.ds.find(filter, cb)
+			this.ds.find(filter, options, cb)
 			//return Promise.resolve(null)
 		}
 		else {
 			return new Promise((resolve, reject) => {
-				this.ds.find(filter, (err, instances) => {
+				this.ds.find(filter, options, (err, instances) => {
 					if(err) reject(err)
 					else resolve(instances.map(i => this.getInstance(i)))
 				})

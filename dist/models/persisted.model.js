@@ -149,12 +149,12 @@ let PersistedDao = class PersistedDao extends base_model_1.BaseDao {
         }
         filter = (filter ? filter : {});
         if (cb) {
-            this.ds.find(filter, cb);
+            this.ds.find(filter, options, cb);
             //return Promise.resolve(null)
         }
         else {
             return new Promise((resolve, reject) => {
-                this.ds.find(filter, (err, instances) => {
+                this.ds.find(filter, options, (err, instances) => {
                     if (err)
                         reject(err);
                     else
