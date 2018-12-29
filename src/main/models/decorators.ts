@@ -54,12 +54,13 @@ export interface CommonModuleOptions
 	declare?:any[]
 	routers?:any[]
 	factories?:any[]
+	controllers?:any[]
 }
 
 export function CommonModule(options:CommonModuleOptions) {
 	return function(constructor:any) {
 		let meta = Registry.getProperty(constructor.name, 'meta')
-		let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [], routers: [], factories: [] }, options)
+		let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [], routers: [], factories: [], controllers: [] }, options)
 
 		meta.imports = defaultOptions.imports
 		meta.models = defaultOptions.models
@@ -67,6 +68,7 @@ export function CommonModule(options:CommonModuleOptions) {
 		meta.declare = defaultOptions.declare
 		meta.routers = defaultOptions.routers
 		meta.factories = defaultOptions.factories
+		meta.controllers = defaultOptions.controllers
 	}
 }
 
@@ -187,4 +189,71 @@ export function Validation(validation, name, value) {
 export function Singleton(constructor:any) {
 	let info = Registry.getProperty(constructor.name, 'info')
 	info.singleton = true
+}
+
+export interface CommonControllerOptions
+{
+	path: string
+}
+
+export function CommonController(options:CommonControllerOptions | string) {
+	return function(constructor:any) {
+		let meta = Registry.getProperty(constructor.name, 'meta')
+
+		if(typeof options === 'string')
+			meta.path = options
+		else
+			meta.path = options.path
+	}
+}
+
+export interface CommonRouteOptions
+{
+	path?: string
+	middlewares?: any[]
+}
+
+export function Get(options:CommonRouteOptions|string) {
+	return function(target, key) {
+		let hooks = Registry.getProperty(target.constructor.name, 'get')
+		hooks['get'] = hooks['get'] || {}
+
+		hooks['get'][key] = options
+	}
+}
+
+export function Post(options:CommonRouteOptions|string) {
+	return function(target, key) {
+		let hooks = Registry.getProperty(target.constructor.name, 'post')
+		hooks['post'] = hooks['post'] || {}
+
+		hooks['post'][key] = options
+	}
+}
+
+export function Put(options:CommonRouteOptions|string) {
+	return function(target, key) {
+		let hooks = Registry.getProperty(target.constructor.name, 'put')
+		hooks['put'] = hooks['put'] || {}
+
+		hooks['put'][key] = options
+	}
+}
+
+export function Delete(options:CommonRouteOptions|string) {
+	return function(target, key) {
+		let hooks = Registry.getProperty(target.constructor.name, 'delete')
+		hooks['delete'] = hooks['delete'] || {}
+
+		hooks['delete'][key] = options
+	}
+}
+
+export function Patch(options:CommonRouteOptions|string) {
+	return function(target, key) {
+		let hooks = Registry.getProperty(target.constructor.name, 'patch')
+		hooks['patch'] = hooks['patch'] || {}
+
+		hooks['patch'][key] = options
+	}
 }

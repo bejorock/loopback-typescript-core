@@ -257,6 +257,49 @@ export class Module
 		this.ctx.registerRouter(router.base, router.onRoute)
 	}
 
+	loadController(controllerClass) {
+		this.log.debug(`load controller ${controllerClass.name}`)
+
+		this.container.bind(controllerClass).to(controllerClass).inSingletonScope()
+		let controller = this.container.get(controllerClass)
+
+		let meta = Registry.getProperty(controllerClass.name, 'meta')
+
+		// load methods
+		let remotes = Registry.getProperty(controllerClass.name, 'remotes')
+		for(let protocol in remotes) {
+			// get, post, put, delete, patch
+			let protocolOpts = remotes[protocol]
+			
+			for(let methodName in protocolOpts) {
+				// find, findOne, findById
+				let methodOpts = protocolOpts[methodName]
+
+				// check if there is middleware
+				let middlewares = methodOpts.middlewares
+				for(let i=0; i<middlewares.length; i++) {
+					let middleware:any = this.container.resolve(middlewares[i])
+
+					this.ctx.registerMiddleware('routes', meta.path + '/' + (methodOpts.path ? methodOpts.path : methodName), async function(req, res, next) {
+						try {
+							await middleware.onRequest.apply(middleware, arguments)
+						} catch(e) {
+							next(e)
+						}
+					})	
+				}
+
+				this.ctx.registerMiddleware('routes', meta.path + '/' + (methodOpts.path ? methodOpts.path : methodName), async function(req, res, next) {
+					try {
+						await controller[methodName].apply(controller, arguments)
+					} catch(e) {
+						next(e)
+					}
+				})
+			}
+		}
+	}
+
 	loadAll(m:any) {
 		let meta = Registry.getProperty(m.constructor.name, 'meta') 
 
@@ -282,6 +325,9 @@ export class Module
 
 		// setup routers
 		meta.routers.forEach(routerClass => this.loadRouter(routerClass))
+
+		// setup controllers
+		meta.controllers.forEach(controllerClass => this.loadController(controllerClass))
 	}
 
 	applyMixin(modelClass, seed) {

@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "test:init": "./node_modules/.bin/jasmine init",
-    "test": "ts-node ./node_modules/.bin/jasmine"
+    "test": "ts-node ./node_modules/.bin/jasmine",
+    "prelib:publish": "tsc && npm --no-git-tag-version version patch",
+    "lib:publish": "npm publish --registry http://45.76.182.17:4873"
   },
   "keywords": [
     "loopback",
@@ -39,6 +41,6 @@
     "jasmine": "^3.3.1",
     "loopback-connector-kv-redis": "^3.0.0",
     "loopback-connector-redis": "^3.0.0",
-    "loopback-typescript-redis-connector": "git+https://github.com/bejorock/loopback-typescript-redis-connector.git#v1.0.1"
+    "loopback-typescript-redis-connector": "^1.0.1"
   }
 }
