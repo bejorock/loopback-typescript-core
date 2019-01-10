@@ -1,1 +1,0 @@
-{"version":3,"file":"error.middleware.js","sourceRoot":"","sources":["../../../../src/main/middleware/error.middleware.ts"],"names":[],"mappings":";;;;;;;;;;;AAAA,yCAAuC;AAUvC,IAAsB,eAAe,GAArC;IAIC,YAAY,KAAK,GAAG,cAAc;QACjC,IAAI,CAAC,KAAK,GAAG,KAAK,CAAA;IACnB,CAAC;CAGD,CAAA;AATqB,eAAe;IADpC,sBAAU,EAAE;;GACS,eAAe,CASpC;AATqB,0CAAe"}

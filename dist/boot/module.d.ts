@@ -18,6 +18,7 @@ export declare class Module {
     loadObserver(ctxClass: any, modelSeed: any): void;
     loadMiddleware(middlewareClass: any): void;
     loadRouter(routerClass: any): void;
+    loadController(controllerClass: any): void;
     loadAll(m: any): void;
     applyMixin(modelClass: any, seed: any): void;
     getContainer(): Container;

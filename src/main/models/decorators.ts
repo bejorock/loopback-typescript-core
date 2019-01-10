@@ -213,47 +213,77 @@ export interface CommonRouteOptions
 	middlewares?: any[]
 }
 
-export function Get(options:CommonRouteOptions|string) {
+export function Get(options?:CommonRouteOptions|string) {
 	return function(target, key) {
-		let hooks = Registry.getProperty(target.constructor.name, 'get')
+		let hooks = Registry.getProperty(target.constructor.name, 'remotes')
 		hooks['get'] = hooks['get'] || {}
 
-		hooks['get'][key] = options
+		if(typeof options === 'string')
+			hooks['get'][key] = {
+				path: options,
+				middlewares: []
+			}
+		else
+			hooks['get'][key] = Object.assign({middlewares: []}, options)
 	}
 }
 
-export function Post(options:CommonRouteOptions|string) {
+export function Post(options?:CommonRouteOptions|string) {
 	return function(target, key) {
-		let hooks = Registry.getProperty(target.constructor.name, 'post')
+		let hooks = Registry.getProperty(target.constructor.name, 'remotes')
 		hooks['post'] = hooks['post'] || {}
 
-		hooks['post'][key] = options
+		if(typeof options === 'string')
+			hooks['post'][key] = {
+				path: options,
+				middlewares: []
+			}
+		else
+			hooks['post'][key] = Object.assign({middlewares: []}, options)
 	}
 }
 
-export function Put(options:CommonRouteOptions|string) {
+export function Put(options?:CommonRouteOptions|string) {
 	return function(target, key) {
-		let hooks = Registry.getProperty(target.constructor.name, 'put')
+		let hooks = Registry.getProperty(target.constructor.name, 'remotes')
 		hooks['put'] = hooks['put'] || {}
 
-		hooks['put'][key] = options
+		if(typeof options === 'string')
+			hooks['put'][key] = {
+				path: options,
+				middlewares: []
+			}
+		else
+			hooks['put'][key] = Object.assign({middlewares: []}, options)
 	}
 }
 
-export function Delete(options:CommonRouteOptions|string) {
+export function Delete(options?:CommonRouteOptions|string) {
 	return function(target, key) {
-		let hooks = Registry.getProperty(target.constructor.name, 'delete')
+		let hooks = Registry.getProperty(target.constructor.name, 'remotes')
 		hooks['delete'] = hooks['delete'] || {}
 
-		hooks['delete'][key] = options
+		if(typeof options === 'string')
+			hooks['delete'][key] = {
+				path: options,
+				middlewares: []
+			}
+		else
+			hooks['delete'][key] = Object.assign({middlewares: []}, options)
 	}
 }
 
-export function Patch(options:CommonRouteOptions|string) {
+export function Patch(options?:CommonRouteOptions|string) {
 	return function(target, key) {
-		let hooks = Registry.getProperty(target.constructor.name, 'patch')
+		let hooks = Registry.getProperty(target.constructor.name, 'remotes')
 		hooks['patch'] = hooks['patch'] || {}
 
-		hooks['patch'][key] = options
+		if(typeof options === 'string')
+			hooks['patch'][key] = {
+				path: options,
+				middlewares: []
+			}
+		else
+			hooks['patch'][key] = Object.assign({middlewares: []}, options)
 	}
 }

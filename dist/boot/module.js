@@ -41,6 +41,7 @@ const stream_1 = require("stream");
 const dateformat_1 = __importDefault(require("dateformat"));
 const safe_1 = __importDefault(require("colors/safe"));
 const yargs = require("yargs");
+const normalizeUrl = require("normalize-path");
 const argv = yargs.argv;
 const consoleOut = new stream_1.Writable({ objectMode: true });
 consoleOut._write = (chunk, enc, next) => {
@@ -84,11 +85,14 @@ let Module = class Module {
         let hidden = this.loadHidden(modelClass);
         let relations = this.loadRelations(modelClass);
         let ds = this.ctx.getDataSource(methods.getDataSourceName());
+        //console.log(relations)
         let regex = /(\w+)(Model?)/;
         let modelName = definition.name;
         let daoName = definition.name.replace(regex, '$1Dao');
         let modelSeed = ds.createModel(modelName, properties, Object.assign(definition, { hidden, relations }));
+        //let modelSeed = ds.createModel(modelName, properties, Object.assign(definition, { hidden }))
         let daoSeed = ds.createModel(daoName, properties, Object.assign(definition, { hidden, relations }));
+        //let daoSeed = ds.createModel(daoName, properties, Object.assign(definition, { hidden }))
         // register dao seed
         //this.container.bind(`__Seed__${daoName}`).toConstantValue(daoSeed)
         // apply mixins
@@ -117,6 +121,7 @@ let Module = class Module {
         //class Buf extends modelSeed {}
         //this.ctx.registerModel(Buf, {public: methods.isPublish(), dataSource: methods.getDataSourceName()})
         this.container.bind(DaoClass).toConstantValue(dao);
+        //return {modelSeed, daoSeed, relations}
     }
     loadProperties(modelClass) {
         let properties = registry_1.Registry.getProperty(modelClass.name, 'properties');
@@ -238,6 +243,69 @@ let Module = class Module {
         //this.container.get(routerClass)
         this.ctx.registerRouter(router.base, router.onRoute);
     }
+    loadController(controllerClass) {
+        this.log.debug(`load controller ${controllerClass.name}`);
+        this.container.bind(controllerClass).to(controllerClass).inSingletonScope();
+        let controller = this.container.get(controllerClass);
+        let meta = registry_1.Registry.getProperty(controllerClass.name, 'meta');
+        // load methods
+        let remotes = registry_1.Registry.getProperty(controllerClass.name, 'remotes');
+        for (let protocol in remotes) {
+            // get, post, put, delete, patch
+            let protocolOpts = remotes[protocol];
+            let methods = [];
+            for (let methodName in protocolOpts) {
+                let methodOpts = protocolOpts[methodName];
+                let path = meta.path + '/' + (methodOpts.path ? methodOpts.path : (methodOpts.path === '' ? '' : methodName));
+                path = normalizeUrl(path);
+                methods.push({
+                    path: path,
+                    methodName: methodName,
+                    opts: protocolOpts[methodName]
+                });
+            }
+            methods.sort((a, b) => {
+                if (a.path.length > b.path.length)
+                    return -1;
+                if (a.path.length < b.path.length)
+                    return 1;
+                return 0;
+            });
+            //for(let methodName in protocolOpts) {
+            for (let j = 0; j < methods.length; j++) {
+                // find, findOne, findById
+                let methodOpts = methods[j].opts; //protocolOpts[methodName]
+                let path = methods[j].path;
+                let methodName = methods[j].methodName;
+                //console.log(path)
+                // check if there is middleware
+                let middlewares = methodOpts.middlewares;
+                for (let i = 0; i < middlewares.length; i++) {
+                    let middleware = this.container.resolve(middlewares[i]);
+                    this.ctx.registerMiddleware('routes', path, function (req, res, next) {
+                        return __awaiter(this, arguments, void 0, function* () {
+                            try {
+                                yield middleware.onRequest.apply(middleware, arguments);
+                            }
+                            catch (e) {
+                                next(e);
+                            }
+                        });
+                    });
+                }
+                this.ctx.registerMiddleware('routes', path, function (req, res, next) {
+                    return __awaiter(this, arguments, void 0, function* () {
+                        try {
+                            yield controller[methodName].apply(controller, arguments);
+                        }
+                        catch (e) {
+                            next(e);
+                        }
+                    });
+                });
+            }
+        }
+    }
     loadAll(m) {
         let meta = registry_1.Registry.getProperty(m.constructor.name, 'meta');
         // setup child modules
@@ -253,10 +321,36 @@ let Module = class Module {
         meta.factories.forEach(fn => fn(this.container));
         // setup models
         meta.models.forEach(modelClass => this.loadModel(modelClass));
+        //let modelsMeta = meta.models.map(modelClass => this.loadModel(modelClass));
+        // setup model relations
+        /*modelsMeta.forEach(({modelSeed, daoSeed, relations}) => {
+            for(let key in relations) {
+                let entry = relations[key]
+                let relationType = entry['type']
+                let modelName = entry['model']
+                let foreignKey = entry['foreignKey']
+
+                let modelInstance = this.ctx.getParentContext().models[modelName]
+
+                modelSeed[relationType](modelInstance, {
+                    as: key,
+                    foreignKey: foreignKey
+                })
+
+                daoSeed[relationType](modelInstance, {
+                    as: key,
+                    foreignKey: foreignKey
+                })
+
+                //console.log(entry)
+            }
+        })*/
         // setup middleware
         meta.middleware.forEach(middlewareClass => this.loadMiddleware(middlewareClass));
         // setup routers
         meta.routers.forEach(routerClass => this.loadRouter(routerClass));
+        // setup controllers
+        meta.controllers.forEach(controllerClass => this.loadController(controllerClass));
     }
     applyMixin(modelClass, seed) {
         let methods = registry_1.Registry.getProperty(modelClass.name, 'methods');

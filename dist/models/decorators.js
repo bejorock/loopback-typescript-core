@@ -37,13 +37,14 @@ exports.CommonModel = CommonModel;
 function CommonModule(options) {
     return function (constructor) {
         let meta = registry_1.Registry.getProperty(constructor.name, 'meta');
-        let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [], routers: [], factories: [] }, options);
+        let defaultOptions = Object.assign({ imports: [], models: [], middleware: [], declare: [], routers: [], factories: [], controllers: [] }, options);
         meta.imports = defaultOptions.imports;
         meta.models = defaultOptions.models;
         meta.middleware = defaultOptions.middleware;
         meta.declare = defaultOptions.declare;
         meta.routers = defaultOptions.routers;
         meta.factories = defaultOptions.factories;
+        meta.controllers = defaultOptions.controllers;
     };
 }
 exports.CommonModule = CommonModule;
@@ -137,4 +138,84 @@ function Singleton(constructor) {
     info.singleton = true;
 }
 exports.Singleton = Singleton;
+function CommonController(options) {
+    return function (constructor) {
+        let meta = registry_1.Registry.getProperty(constructor.name, 'meta');
+        if (typeof options === 'string')
+            meta.path = options;
+        else
+            meta.path = options.path;
+    };
+}
+exports.CommonController = CommonController;
+function Get(options) {
+    return function (target, key) {
+        let hooks = registry_1.Registry.getProperty(target.constructor.name, 'remotes');
+        hooks['get'] = hooks['get'] || {};
+        if (typeof options === 'string')
+            hooks['get'][key] = {
+                path: options,
+                middlewares: []
+            };
+        else
+            hooks['get'][key] = Object.assign({ middlewares: [] }, options);
+    };
+}
+exports.Get = Get;
+function Post(options) {
+    return function (target, key) {
+        let hooks = registry_1.Registry.getProperty(target.constructor.name, 'remotes');
+        hooks['post'] = hooks['post'] || {};
+        if (typeof options === 'string')
+            hooks['post'][key] = {
+                path: options,
+                middlewares: []
+            };
+        else
+            hooks['post'][key] = Object.assign({ middlewares: [] }, options);
+    };
+}
+exports.Post = Post;
+function Put(options) {
+    return function (target, key) {
+        let hooks = registry_1.Registry.getProperty(target.constructor.name, 'remotes');
+        hooks['put'] = hooks['put'] || {};
+        if (typeof options === 'string')
+            hooks['put'][key] = {
+                path: options,
+                middlewares: []
+            };
+        else
+            hooks['put'][key] = Object.assign({ middlewares: [] }, options);
+    };
+}
+exports.Put = Put;
+function Delete(options) {
+    return function (target, key) {
+        let hooks = registry_1.Registry.getProperty(target.constructor.name, 'remotes');
+        hooks['delete'] = hooks['delete'] || {};
+        if (typeof options === 'string')
+            hooks['delete'][key] = {
+                path: options,
+                middlewares: []
+            };
+        else
+            hooks['delete'][key] = Object.assign({ middlewares: [] }, options);
+    };
+}
+exports.Delete = Delete;
+function Patch(options) {
+    return function (target, key) {
+        let hooks = registry_1.Registry.getProperty(target.constructor.name, 'remotes');
+        hooks['patch'] = hooks['patch'] || {};
+        if (typeof options === 'string')
+            hooks['patch'][key] = {
+                path: options,
+                middlewares: []
+            };
+        else
+            hooks['patch'][key] = Object.assign({ middlewares: [] }, options);
+    };
+}
+exports.Patch = Patch;
 //# sourceMappingURL=decorators.js.map

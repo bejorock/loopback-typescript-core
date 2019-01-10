@@ -37,8 +37,7 @@ export class ReactiveApp
 
 	registerPath(protocol:string, path:string, middleware) {
 		if(!protocol) this.app.use(path, middleware)
-		else if(protocol.toLowerCase() === 'get') this.app.get(path, middleware)
-		else if(protocol.toLowerCase() === 'post') this.app.post(path, middleware)
+		else this.app[protocol](path, middleware)
 	}
 
 	registerRouter(path:string, router) {

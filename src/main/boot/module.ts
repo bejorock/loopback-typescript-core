@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import loopback from 'loopback'
+import express from 'express'
 import compile from 'loopback-boot/lib/compiler'
 import execute from 'loopback-boot/lib/executor'
 import { ReactiveApp } from '../reactive.app'
@@ -15,6 +16,7 @@ import { Writable } from 'stream';
 import dateFormat from 'dateformat';
 import colors from 'colors/safe';
 import yargs = require('yargs');
+import normalizeUrl = require('normalize-path');
 
 const argv = yargs.argv
 
@@ -77,13 +79,15 @@ export class Module
 		let relations = this.loadRelations(modelClass)
 		
 		let ds = this.ctx.getDataSource(methods.getDataSourceName())
-
+		//console.log(relations)
 		let regex = /(\w+)(Model?)/
 		let modelName = definition.name
 		let daoName = definition.name.replace(regex, '$1Dao')
 		
 		let modelSeed = ds.createModel(modelName, properties, Object.assign(definition, { hidden, relations }))
+		//let modelSeed = ds.createModel(modelName, properties, Object.assign(definition, { hidden }))
 		let daoSeed = ds.createModel(daoName, properties, Object.assign(definition, { hidden, relations }))
+		//let daoSeed = ds.createModel(daoName, properties, Object.assign(definition, { hidden }))
 
 		// register dao seed
 		//this.container.bind(`__Seed__${daoName}`).toConstantValue(daoSeed)
@@ -121,6 +125,8 @@ export class Module
 		//this.ctx.registerModel(Buf, {public: methods.isPublish(), dataSource: methods.getDataSourceName()})
 		
 		this.container.bind(DaoClass).toConstantValue(dao)
+
+		//return {modelSeed, daoSeed, relations}
 	}
 
 	loadProperties(modelClass) {
@@ -262,6 +268,7 @@ export class Module
 
 		this.container.bind(controllerClass).to(controllerClass).inSingletonScope()
 		let controller = this.container.get(controllerClass)
+		let router = express.Router()
 
 		let meta = Registry.getProperty(controllerClass.name, 'meta')
 
@@ -270,17 +277,45 @@ export class Module
 		for(let protocol in remotes) {
 			// get, post, put, delete, patch
 			let protocolOpts = remotes[protocol]
-			
-			for(let methodName in protocolOpts) {
-				// find, findOne, findById
-				let methodOpts = protocolOpts[methodName]
+			let methods = []
 
+			for(let methodName in protocolOpts) {
+				let methodOpts = protocolOpts[methodName]
+				let path = meta.path + '/' + (methodOpts.path ? methodOpts.path : (methodOpts.path === '' ? '' : methodName))
+
+				path = normalizeUrl(path)
+
+				methods.push({
+					path: path,
+					methodName: methodName,
+					opts: protocolOpts[methodName]
+				})
+			}
+
+			methods.sort((a, b) => {
+				if(a.path.length > b.path.length)
+					return -1
+
+				if(a.path.length < b.path.length)
+					return 1
+
+				return 0
+			})
+
+			//for(let methodName in protocolOpts) {
+			for(let j=0; j<methods.length; j++) {
+				// find, findOne, findById
+				let methodOpts = methods[j].opts //protocolOpts[methodName]
+				let path = methods[j].path
+				let methodName = methods[j].methodName
+				
+				//console.log(path)
 				// check if there is middleware
 				let middlewares = methodOpts.middlewares
 				for(let i=0; i<middlewares.length; i++) {
 					let middleware:any = this.container.resolve(middlewares[i])
 
-					this.ctx.registerMiddleware('routes', meta.path + '/' + (methodOpts.path ? methodOpts.path : methodName), async function(req, res, next) {
+					router[protocol](path, async function(req, res, next) {
 						try {
 							await middleware.onRequest.apply(middleware, arguments)
 						} catch(e) {
@@ -289,7 +324,7 @@ export class Module
 					})	
 				}
 
-				this.ctx.registerMiddleware('routes', meta.path + '/' + (methodOpts.path ? methodOpts.path : methodName), async function(req, res, next) {
+				router[protocol](path, async function(req, res, next) {
 					try {
 						await controller[methodName].apply(controller, arguments)
 					} catch(e) {
@@ -298,6 +333,8 @@ export class Module
 				})
 			}
 		}
+
+		this.ctx.registerMiddleware('routes', router)
 	}
 
 	loadAll(m:any) {
@@ -319,6 +356,31 @@ export class Module
 
 		// setup models
 		meta.models.forEach(modelClass => this.loadModel(modelClass));
+		//let modelsMeta = meta.models.map(modelClass => this.loadModel(modelClass));
+
+		// setup model relations
+		/*modelsMeta.forEach(({modelSeed, daoSeed, relations}) => {
+			for(let key in relations) {
+				let entry = relations[key]
+				let relationType = entry['type']
+				let modelName = entry['model']
+				let foreignKey = entry['foreignKey']
+
+				let modelInstance = this.ctx.getParentContext().models[modelName]
+
+				modelSeed[relationType](modelInstance, {
+					as: key,
+					foreignKey: foreignKey
+				})
+
+				daoSeed[relationType](modelInstance, {
+					as: key,
+					foreignKey: foreignKey
+				})
+
+				//console.log(entry)
+			}
+		})*/
 
 		// setup middleware
 		meta.middleware.forEach(middlewareClass => this.loadMiddleware(middlewareClass))
