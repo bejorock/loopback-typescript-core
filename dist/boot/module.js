@@ -59,6 +59,10 @@ consoleOut._write = (chunk, enc, next) => {
         console.log(`[${dateformat_1.default(new Date(obj.time), 'dd-mm-yy HH:MM:ss')}] INFO: ${obj.name}: ${obj.msg}`);
     next();
 };
+const defaultCb = (err) => {
+    if (err)
+        console.log(err);
+};
 let Module = class Module {
     configure(parentContainer) {
         this.log = Bunyan.createLogger({
@@ -180,8 +184,13 @@ let Module = class Module {
     loadBeforeRemoteHook(ctxClass, modelSeed, realDao) {
         let hooks = registry_1.Registry.getProperty(ctxClass.name, 'beforeRemoteHooks'); //ctxClass.beforeRemoteHooks
         for (let key in hooks) {
-            modelSeed.beforeRemote(key, (ctx, next) => {
-                let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next);
+            this.log.debug(`attach ${key} after remote to ${ctxClass.name}`);
+            modelSeed.beforeRemote(key, (ctx, instance, next) => {
+                if (!next) {
+                    next = instance;
+                    instance = undefined;
+                }
+                let prome = ctxClass.prototype[hooks[key]].call(realDao, ctx, instance, next);
                 if (prome instanceof Promise)
                     prome.then(_ => next()).catch(err => next(err));
             });
@@ -190,8 +199,13 @@ let Module = class Module {
     loadAfterRemoteHook(ctxClass, modelSeed, realDao) {
         let hooks = registry_1.Registry.getProperty(ctxClass.name, 'afterRemoteHooks'); //ctxClass.afterRemoteHooks
         for (let key in hooks) {
-            modelSeed.afterRemote(key, (ctx, next) => {
-                let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next);
+            this.log.debug(`attach ${key} after remote to ${ctxClass.name}`);
+            modelSeed.afterRemote(key, (ctx, instance, next) => {
+                if (!next) {
+                    next = instance;
+                    instance = undefined;
+                }
+                let prome = ctxClass.prototype[hooks[key]].call(realDao, ctx, instance, next);
                 if (prome instanceof Promise)
                     prome.then(_ => next()).catch(err => next(err));
             });
@@ -200,9 +214,13 @@ let Module = class Module {
     loadObserver(ctxClass, modelSeed, realDao) {
         let hooks = registry_1.Registry.getProperty(ctxClass.name, 'observer'); //ctxClass.observer
         for (let key in hooks) {
-            this.log.debug(`attach ${key} hook to ${ctxClass}`);
-            modelSeed.observe(key, (ctx, next) => {
-                let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next);
+            this.log.debug(`attach ${key} hook to ${ctxClass.name}`);
+            modelSeed.observe(key, (ctx, instance, next) => {
+                if (!next) {
+                    next = instance;
+                    instance = undefined;
+                }
+                let prome = ctxClass.prototype[hooks[key]].call(realDao, ctx, instance, next);
                 if (prome instanceof Promise)
                     prome.then(_ => next()).catch(err => next(err));
             });
