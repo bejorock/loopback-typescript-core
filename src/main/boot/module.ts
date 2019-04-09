@@ -108,14 +108,14 @@ export class Module
 		this.loadProtoRemoteMethod(modelClass, modelSeed, dao)
 
 		// load remote hooks
-		this.loadBeforeRemoteHook(DaoClass, modelSeed)
-		this.loadBeforeRemoteHook(modelClass, modelSeed)
-		this.loadAfterRemoteHook(DaoClass, modelSeed)
-		this.loadAfterRemoteHook(modelClass, modelSeed)
+		this.loadBeforeRemoteHook(DaoClass, modelSeed, dao)
+		this.loadBeforeRemoteHook(modelClass, modelSeed, dao)
+		this.loadAfterRemoteHook(DaoClass, modelSeed, dao)
+		this.loadAfterRemoteHook(modelClass, modelSeed, dao)
 
 		// load operation hooks
-		this.loadObserver(DaoClass, daoSeed)
-		this.loadObserver(modelClass, daoSeed)
+		this.loadObserver(DaoClass, daoSeed, dao)
+		this.loadObserver(modelClass, daoSeed, dao)
 
 		// register model
 		//this.ctx.registerModel(modelSeed, {public: methods.isPublish(), dataSource: methods.getDataSourceName()})
@@ -189,27 +189,40 @@ export class Module
 		if(!_.isEmpty(baseClass.name)) this.loadProtoRemoteMethod(baseClass, modelSeed, dao)
 	}
 
-	loadBeforeRemoteHook(ctxClass, modelSeed) {
+	loadBeforeRemoteHook(ctxClass, modelSeed, realDao) {
 		let hooks = Registry.getProperty(ctxClass.name, 'beforeRemoteHooks') //ctxClass.beforeRemoteHooks
 
 		for(let key in hooks) {
-			modelSeed.beforeRemote(key, ctxClass.prototype[hooks[key]])
+			modelSeed.beforeRemote(key, (ctx, next) => {
+				let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next)
+				if(prome instanceof Promise)
+					prome.then(_ => next()).catch(err => next(err))
+			})
 		}
 	}
 
-	loadAfterRemoteHook(ctxClass, modelSeed) {
+	loadAfterRemoteHook(ctxClass, modelSeed, realDao) {
 		let hooks = Registry.getProperty(ctxClass.name, 'afterRemoteHooks') //ctxClass.afterRemoteHooks
 
 		for(let key in hooks) {
-			modelSeed.afterRemote(key, ctxClass.prototype[hooks[key]])
+			modelSeed.afterRemote(key, (ctx, next) => {
+				let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next)
+				if(prome instanceof Promise)
+					prome.then(_ => next()).catch(err => next(err))
+			})
 		}
 	}
 
-	loadObserver(ctxClass, modelSeed) {
+	loadObserver(ctxClass, modelSeed, realDao) {
 		let hooks = Registry.getProperty(ctxClass.name, 'observer') //ctxClass.observer
 
 		for(let key in hooks) {
-			modelSeed.afterRemote(key, ctxClass.prototype[hooks[key]])
+			this.log.debug(`attach ${key} hook to ${ctxClass}`)
+			modelSeed.observe(key, (ctx, next) => {
+				let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next)
+				if(prome instanceof Promise)
+					prome.then(_ => next()).catch(err => next(err))
+			})
 		}
 	}
 

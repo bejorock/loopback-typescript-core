@@ -51,8 +51,10 @@ let BaseRouter = class BaseRouter {
             }
             if (route.protocol && handlers.length > 0)
                 this._router[route.protocol].apply(this._router, args);
+            //handlers.forEach(handler => this._router[route.protocol](route.path, handler.onRequest))	
             else if (handlers.length > 0)
                 this._router.use.apply(this._router, args);
+            //handlers.forEach(handler => this._router.use(route.path, handler.onRequest))
             else if (childRouter)
                 this._router.use(route.path, childRouter.onRoute);
         });

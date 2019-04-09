@@ -18,17 +18,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-}
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
     if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
     result["default"] = mod;
     return result;
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const loopback_1 = __importDefault(require("loopback"));
+const express_1 = __importDefault(require("express"));
 const compiler_1 = __importDefault(require("loopback-boot/lib/compiler"));
 const executor_1 = __importDefault(require("loopback-boot/lib/executor"));
 const reactive_app_1 = require("../reactive.app");
@@ -108,13 +109,13 @@ let Module = class Module {
         this.loadStaticRemoteMethod(DaoClass, modelSeed);
         this.loadProtoRemoteMethod(modelClass, modelSeed, dao);
         // load remote hooks
-        this.loadBeforeRemoteHook(DaoClass, modelSeed);
-        this.loadBeforeRemoteHook(modelClass, modelSeed);
-        this.loadAfterRemoteHook(DaoClass, modelSeed);
-        this.loadAfterRemoteHook(modelClass, modelSeed);
+        this.loadBeforeRemoteHook(DaoClass, modelSeed, dao);
+        this.loadBeforeRemoteHook(modelClass, modelSeed, dao);
+        this.loadAfterRemoteHook(DaoClass, modelSeed, dao);
+        this.loadAfterRemoteHook(modelClass, modelSeed, dao);
         // load operation hooks
-        this.loadObserver(DaoClass, daoSeed);
-        this.loadObserver(modelClass, daoSeed);
+        this.loadObserver(DaoClass, daoSeed, dao);
+        this.loadObserver(modelClass, daoSeed, dao);
         // register model
         //this.ctx.registerModel(modelSeed, {public: methods.isPublish(), dataSource: methods.getDataSourceName()})
         this.ctx.registerModel(dao.compile(modelSeed), { public: methods.isPublish(), dataSource: methods.getDataSourceName() });
@@ -176,22 +177,35 @@ let Module = class Module {
         if (!_.isEmpty(baseClass.name))
             this.loadProtoRemoteMethod(baseClass, modelSeed, dao);
     }
-    loadBeforeRemoteHook(ctxClass, modelSeed) {
+    loadBeforeRemoteHook(ctxClass, modelSeed, realDao) {
         let hooks = registry_1.Registry.getProperty(ctxClass.name, 'beforeRemoteHooks'); //ctxClass.beforeRemoteHooks
         for (let key in hooks) {
-            modelSeed.beforeRemote(key, ctxClass.prototype[hooks[key]]);
+            modelSeed.beforeRemote(key, (ctx, next) => {
+                let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next);
+                if (prome instanceof Promise)
+                    prome.then(_ => next()).catch(err => next(err));
+            });
         }
     }
-    loadAfterRemoteHook(ctxClass, modelSeed) {
+    loadAfterRemoteHook(ctxClass, modelSeed, realDao) {
         let hooks = registry_1.Registry.getProperty(ctxClass.name, 'afterRemoteHooks'); //ctxClass.afterRemoteHooks
         for (let key in hooks) {
-            modelSeed.afterRemote(key, ctxClass.prototype[hooks[key]]);
+            modelSeed.afterRemote(key, (ctx, next) => {
+                let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next);
+                if (prome instanceof Promise)
+                    prome.then(_ => next()).catch(err => next(err));
+            });
         }
     }
-    loadObserver(ctxClass, modelSeed) {
+    loadObserver(ctxClass, modelSeed, realDao) {
         let hooks = registry_1.Registry.getProperty(ctxClass.name, 'observer'); //ctxClass.observer
         for (let key in hooks) {
-            modelSeed.afterRemote(key, ctxClass.prototype[hooks[key]]);
+            this.log.debug(`attach ${key} hook to ${ctxClass}`);
+            modelSeed.observe(key, (ctx, next) => {
+                let prome = ctxClass.prototype[hooks[key]].apply(realDao, ctx, next);
+                if (prome instanceof Promise)
+                    prome.then(_ => next()).catch(err => next(err));
+            });
         }
     }
     loadMiddleware(middlewareClass) {
@@ -247,6 +261,7 @@ let Module = class Module {
         this.log.debug(`load controller ${controllerClass.name}`);
         this.container.bind(controllerClass).to(controllerClass).inSingletonScope();
         let controller = this.container.get(controllerClass);
+        let router = express_1.default.Router();
         let meta = registry_1.Registry.getProperty(controllerClass.name, 'meta');
         // load methods
         let remotes = registry_1.Registry.getProperty(controllerClass.name, 'remotes');
@@ -282,7 +297,7 @@ let Module = class Module {
                 let middlewares = methodOpts.middlewares;
                 for (let i = 0; i < middlewares.length; i++) {
                     let middleware = this.container.resolve(middlewares[i]);
-                    this.ctx.registerMiddleware('routes', path, function (req, res, next) {
+                    router[protocol](path, function (req, res, next) {
                         return __awaiter(this, arguments, void 0, function* () {
                             try {
                                 yield middleware.onRequest.apply(middleware, arguments);
@@ -293,7 +308,7 @@ let Module = class Module {
                         });
                     });
                 }
-                this.ctx.registerMiddleware('routes', path, function (req, res, next) {
+                router[protocol](path, function (req, res, next) {
                     return __awaiter(this, arguments, void 0, function* () {
                         try {
                             yield controller[methodName].apply(controller, arguments);
@@ -305,6 +320,7 @@ let Module = class Module {
                 });
             }
         }
+        this.ctx.registerMiddleware('routes', router);
     }
     loadAll(m) {
         let meta = registry_1.Registry.getProperty(m.constructor.name, 'meta');

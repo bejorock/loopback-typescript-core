@@ -25,7 +25,7 @@ export declare class BaseDao {
     protected readonly ds: any;
     protected readonly context: ReactiveApp;
     newInstance(seed: any, isCreated?: any, ignore?: any): any;
-    private copyFunctions(target, source);
+    private copyFunctions;
 }
 export interface ModelFactoryDao {
     ModelClass: any;

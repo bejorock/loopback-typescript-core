@@ -1,4 +1,3 @@
-/// <reference types="express" />
 import express = require('express');
 import { Container } from 'inversify';
 import { CommonRoute } from '../models/decorators';
