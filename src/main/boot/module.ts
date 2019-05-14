@@ -121,6 +121,9 @@ export class Module
 		this.loadObserver(DaoClass, daoSeed, dao)
 		this.loadObserver(modelClass, daoSeed, dao)
 
+		this.loadObserver(DaoClass, modelSeed, dao)
+		this.loadObserver(modelClass, modelSeed, dao)
+
 		// register model
 		//this.ctx.registerModel(modelSeed, {public: methods.isPublish(), dataSource: methods.getDataSourceName()})
 		this.ctx.registerModel(dao.compile(modelSeed), {public: methods.isPublish(), dataSource: methods.getDataSourceName()})
