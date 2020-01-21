@@ -6,6 +6,7 @@
   "scripts": {
     "test:init": "./node_modules/.bin/jasmine init",
     "test": "ts-node ./node_modules/.bin/jasmine",
+    "build": "tsc --p tsconfig.prod.json",
     "prelib:publish": "tsc --p tsconfig.prod.json && npm --no-git-tag-version version patch",
     "lib:publish": "npm publish --registry http://45.76.182.17:4873"
   },

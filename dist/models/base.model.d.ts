@@ -9,8 +9,8 @@ export declare class BaseModel {
     on(eventName: any, cb: any): void;
     emit(eventName: any, ctx: any): void;
     onInit(): void;
-    readonly ds: any;
-    readonly ctx: any;
+    get ds(): any;
+    get ctx(): any;
     get(name: any): any;
 }
 export declare class BaseDao {
@@ -22,8 +22,8 @@ export declare class BaseDao {
     on(eventName: any, cb: any): void;
     emit(eventName: any, ctx: any): void;
     onInit(): void;
-    protected readonly ds: any;
-    protected readonly context: ReactiveApp;
+    protected get ds(): any;
+    protected get context(): ReactiveApp;
     newInstance(seed: any, isCreated?: any, ignore?: any): any;
     private copyFunctions;
 }

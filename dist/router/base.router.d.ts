@@ -14,6 +14,6 @@ export declare abstract class BaseRouter implements Router {
     base: string;
     routes: CommonRoute[];
     configure(): void;
-    readonly onRoute: ExpressRouter;
+    get onRoute(): ExpressRouter;
     abstract newRouter(): ExpressRouter;
 }

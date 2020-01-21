@@ -21,6 +21,6 @@ class Registry {
         return registry[property];
     }
 }
-Registry.classMeta = {};
 exports.Registry = Registry;
+Registry.classMeta = {};
 //# sourceMappingURL=registry.js.map

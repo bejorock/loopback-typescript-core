@@ -7,5 +7,5 @@ export declare class RoleDao extends PersistedDao {
     registerResolver(role: any, resolver: any): void;
 }
 export declare class RoleModel extends PersistedModel {
-    readonly principals: PersistedDao;
+    get principals(): PersistedDao;
 }
